@@ -3,10 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@alephium/cli": "^0.41.0",
+    "@alephium/get-extension-wallet": "^0.41.0",
+    "@alephium/web3": "^0.41.0",
+    "@alephium/web3-react": "^0.41.0",
+    "@alephium/web3-test": "^0.41.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "buffer": "^6.0.3",
     "react": "^18.3.1",
+    "react-app-rewired": "^2.2.1",
     "react-dom": "^18.3.1",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
