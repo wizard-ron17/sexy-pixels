@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import './App.css';
 import { AlephiumWalletProvider, AlephiumConnectButton } from '@alephium/web3-react';
 
@@ -9,54 +9,57 @@ const colors = [
   '#8800FF', '#FF0088', '#888800', '#008888'
 ];
 
+const getGridCoordinates = (index) => {
+  const x = index % 100 + 1;
+  const y = Math.floor(index / 100) + 1;
+  return `(${x},${y})`;
+};
+
 function App() {
   const [pixels, setPixels] = useState(Array(10000).fill('#333'));
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPixel, setSelectedPixel] = useState(null);
   const [selectedColor, setSelectedColor] = useState(null);
 
-  const handlePixelClick = (index) => {
+  const handlePixelClick = useCallback((index) => {
     if (pixels[index] === '#333') {
       setSelectedPixel(index);
       setModalVisible(true);
     }
-  };
+  }, [pixels]);
 
-  const handleColorClick = (color) => {
+  const handleColorClick = useCallback((color) => {
     setSelectedColor(color);
-  };
+  }, []);
 
-  const handleColorSubmit = () => {
+  const handleColorSubmit = useCallback(() => {
     if (selectedPixel !== null && selectedColor) {
-      const newPixels = [...pixels];
-      newPixels[selectedPixel] = selectedColor;
-      setPixels(newPixels);
+      setPixels(prevPixels => {
+        const newPixels = [...prevPixels];
+        newPixels[selectedPixel] = selectedColor;
+        return newPixels;
+      });
       setModalVisible(false);
       setSelectedColor(null);
       setSelectedPixel(null);
     }
-  };
+  }, [selectedPixel, selectedColor]);
 
-  const closeModal = () => {
+  const closeModal = useCallback(() => {
     setModalVisible(false);
     setSelectedColor(null);
     setSelectedPixel(null);
-  };
+  }, []);
 
-  const getGridCoordinates = (index) => {
-    const row = Math.floor(index / 100) + 1;
-    const col = getColumnLabel(index % 100);
-    return `${col}:${row}`;
-  };
-
-  const getColumnLabel = (colIndex) => {
-    let label = '';
-    while (colIndex >= 0) {
-      label = String.fromCharCode((colIndex % 26) + 65) + label;
-      colIndex = Math.floor(colIndex / 26) - 1;
-    }
-    return label;
-  };
+  const memoizedPixels = useMemo(() => pixels.map((color, index) => (
+    <div
+      key={index}
+      className="pixel"
+      style={{ backgroundColor: color }}
+      onClick={() => handlePixelClick(index)}
+      title={getGridCoordinates(index)}
+    />
+  )), [pixels, handlePixelClick]);
 
   return (
     <AlephiumWalletProvider useTheme="retro">
@@ -72,15 +75,7 @@ function App() {
         <main>
           <div id="grid-container">
             <div id="grid">
-              {pixels.map((color, index) => (
-                <div
-                  key={index}
-                  className="pixel"
-                  style={{ backgroundColor: color }}
-                  onClick={() => handlePixelClick(index)}
-                  title={getGridCoordinates(index)}  // Add the tooltip here
-                />
-              ))}
+              {memoizedPixels}
             </div>
           </div>
         </main>
