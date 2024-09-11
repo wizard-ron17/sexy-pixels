@@ -1,6 +1,6 @@
 import "std/nft_interface"
 
-Contract AwesomeNFT(
+Contract AlphWall(
   collectionId: ByteVec,
   nftIndex: U256,
   uri: ByteVec
