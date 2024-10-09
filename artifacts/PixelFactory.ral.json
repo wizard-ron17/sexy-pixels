@@ -1,0 +1,167 @@
+{
+  "version": "v3.8.1",
+  "name": "PixelFactory",
+  "bytecode": "02054038404b407b4132419d01000105024020d3ce74f35a160043102e0c2f0c7b0c1701101702160016011601102a621703160016021602102a62170416036e16046e02010002020107d3b83c87a31600681601684402010002030213d3c81f3b970c0d0d140a5f5f6d61705f5f305f5f16001601000144cb1702160201010d0d0d16020101020103030b004051d34e4d324e1600ce00321601ce01321a0c7bb4170316001601000117041602160317061705140a5f5f6d61705f5f305f5f160444cbc54b0b1603d1a2140a5f5f6d61705f5f305f5f160444b116051606d201024a40260c0d0d140a5f5f6d61705f5f305f5f160444cb170a160a01010d0d0d160a0101170817071608170916091706160516060d0e0c140a5f5f6d61705f5f305f5f160444cb170a160a01020c0e0c160a0102051603160016011602610100020600402bd3e09576871600160100011702140a5f5f6d61705f5f305f5f16001601000144cbc50d7b0c0d0d140a5f5f6d61705f5f305f5f160244cb1705160501010d0d0d160501011704170316040d0c140a5f5f6d61705f5f305f5f160244cb010306160016015f",
+  "codeHash": "389a09b93d67cd6d852e798da3a79c3a2bcc80ad57726478b016d76d31e40522",
+  "fieldsSig": {
+    "names": [
+      "maxX",
+      "maxY"
+    ],
+    "types": [
+      "U256",
+      "U256"
+    ],
+    "isMutable": [
+      false,
+      false
+    ]
+  },
+  "eventsSig": [
+    {
+      "name": "PixelSet",
+      "fieldNames": [
+        "caller",
+        "x",
+        "y",
+        "color"
+      ],
+      "fieldTypes": [
+        "Address",
+        "U256",
+        "U256",
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "PixelReset",
+      "fieldNames": [
+        "x",
+        "y"
+      ],
+      "fieldTypes": [
+        "U256",
+        "U256"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "coordByteVecToCartesian",
+      "paramNames": [
+        "coord"
+      ],
+      "paramTypes": [
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false
+      ],
+      "returnTypes": [
+        "U256",
+        "U256"
+      ]
+    },
+    {
+      "name": "cartesianToByteVec",
+      "paramNames": [
+        "x",
+        "y"
+      ],
+      "paramTypes": [
+        "U256",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": [
+        "ByteVec"
+      ]
+    },
+    {
+      "name": "getPixelFromCoordinates",
+      "paramNames": [
+        "x",
+        "y"
+      ],
+      "paramTypes": [
+        "U256",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": [
+        "Pixel"
+      ]
+    },
+    {
+      "name": "setPixel",
+      "paramNames": [
+        "x",
+        "y",
+        "color"
+      ],
+      "paramTypes": [
+        "U256",
+        "U256",
+        "ByteVec"
+      ],
+      "paramIsMutable": [
+        false,
+        false,
+        false
+      ],
+      "returnTypes": []
+    },
+    {
+      "name": "resetPixel",
+      "paramNames": [
+        "x",
+        "y"
+      ],
+      "paramTypes": [
+        "U256",
+        "U256"
+      ],
+      "paramIsMutable": [
+        false,
+        false
+      ],
+      "returnTypes": []
+    }
+  ],
+  "constants": [],
+  "enums": [
+    {
+      "name": "ErrorCodes",
+      "fields": [
+        {
+          "name": "OutsideGrid",
+          "value": {
+            "type": "U256",
+            "value": "0"
+          }
+        },
+        {
+          "name": "PixelNotExist",
+          "value": {
+            "type": "U256",
+            "value": "1"
+          }
+        }
+      ]
+    }
+  ],
+  "mapsSig": {
+    "names": [
+      "pixels"
+    ],
+    "types": [
+      "Map[ByteVec,Pixel]"
+    ]
+  }
+}

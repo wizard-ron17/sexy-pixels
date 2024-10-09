@@ -1,0 +1,26 @@
+{
+  "fullNodeVersion": "v3.8.1",
+  "compilerOptionsUsed": {
+    "ignoreUnusedConstantsWarnings": false,
+    "ignoreUnusedVariablesWarnings": false,
+    "ignoreUnusedFieldsWarnings": false,
+    "ignoreUnusedPrivateFunctionsWarnings": false,
+    "ignoreUpdateFieldsCheckWarnings": false,
+    "ignoreCheckExternalCallerWarnings": false,
+    "ignoreUnusedFunctionReturnWarnings": false
+  },
+  "infos": {
+    "Pixel": {
+      "sourceFile": "pixelFactory.ral",
+      "sourceCodeHash": "3c8be413203f318acf25019a27cce3a126115145785798d5289f6419639f68c4",
+      "bytecodeDebugPatch": "",
+      "codeHashDebug": ""
+    },
+    "PixelFactory": {
+      "sourceFile": "pixelFactory.ral",
+      "sourceCodeHash": "3c8be413203f318acf25019a27cce3a126115145785798d5289f6419639f68c4",
+      "bytecodeDebugPatch": "=18-2+4b=2-2+cf=259-1+3=111-1+d=38+7a7e0214696e73657274206174206d617020706174683a2000=215-1+d=182+7a7e021472656d6f7665206174206d617020706174683a2000=18",
+      "codeHashDebug": "ae89e887ad24a3de2f8c2906a737113fd7324a13a027acfc8a363a6d5600b4fc"
+    }
+  }
+}

@@ -1,0 +1,79 @@
+struct Pixel {
+   mut color: ByteVec, //encoded on 4 bytes
+   mut firstMinter: Address // used to send back the alph back when removed
+}
+
+Contract PixelFactory(
+   maxX: U256,
+   maxY: U256
+){
+   
+   mapping[ByteVec, Pixel] pixels
+   
+   event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec)
+   event PixelReset(x: U256, y: U256)
+
+   enum ErrorCodes {
+      OutsideGrid = 0
+      PixelNotExist = 1
+   }
+
+
+   pub fn coordByteVecToCartesian(coord: ByteVec) -> (U256, U256) {
+      assert!(size!(coord) % 4 == 0, 0)
+
+      let offsetX = 0
+      let offSetY = 4
+      let x = byteVecSlice!(coord, offsetX, offsetX + 4)
+      let y = byteVecSlice!(coord, offSetY, offSetY + 4)
+      return u256From4Byte!(x), u256From4Byte!(y)
+   }
+
+   pub fn cartesianToByteVec(x: U256, y: U256) -> ByteVec {
+      return u256To4Byte!(x) ++ u256To4Byte!(y)
+   }
+
+   pub fn getPixelFromCoordinates(x: U256, y: U256) -> Pixel{
+      return pixels[cartesianToByteVec(x, y)]
+   }
+
+   @using(preapprovedAssets = true, checkExternalCaller = false)
+   pub fn setPixel(x: U256, y: U256, color: ByteVec) -> (){
+      assert!(x <= maxX && y <= maxY,ErrorCodes.OutsideGrid)
+
+      let caller = callerAddress!()
+
+      let coordinates = cartesianToByteVec(x,y)
+      let mut newPixel = Pixel {
+         color: color,
+         firstMinter: caller
+      }
+
+      if (!pixels.contains!(coordinates)){
+         pixels.insert!(caller, coordinates, newPixel)
+      }else{
+         // set back the first minter
+         let pixel = pixels[coordinates]
+         let firstMinter = pixel.firstMinter
+         newPixel.firstMinter = firstMinter
+         pixels[coordinates] = newPixel
+      }
+
+      emit PixelSet(caller, x, y, color) 
+
+   }
+
+   @using(checkExternalCaller = false)
+   pub fn resetPixel(x: U256, y: U256) -> (){
+      let coordinates = cartesianToByteVec(x,y)
+      assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
+      let pixel = pixels[coordinates]
+
+      pixels.remove!(pixel.firstMinter, coordinates)
+
+      emit PixelReset(x, y)
+   }
+
+
+
+}
