@@ -1,12 +1,3 @@
 {
-  "compilerOptions": {
-    "ignoreUnusedConstantsWarnings": false,
-    "ignoreUnusedVariablesWarnings": false,
-    "ignoreUnusedFieldsWarnings": false,
-    "ignoreUnusedPrivateFunctionsWarnings": false,
-    "ignoreUpdateFieldsCheckWarnings": false,
-    "ignoreCheckExternalCallerWarnings": false
-  },
-  "contractPath": "src/services",
-  "artifactPath": "src/artifacts"
+  "contractPath": "contracts"
 }
