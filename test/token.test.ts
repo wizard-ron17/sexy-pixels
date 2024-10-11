@@ -24,6 +24,7 @@ import {
 } from "./utils";
 import { PixelFactory } from "../artifacts/ts";
 
+jest.setTimeout(10*1000)
 describe("integration tests", () => {
   const defaultGroup = 0;
 
@@ -274,6 +275,82 @@ describe("integration tests", () => {
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
       });
+     
+
+      state = await factory.fetchState();
+      expect(state.fields.numPxMinted).toEqual(0n);
+      expect(state.fields.balance).toEqual(0n);
+      expect(state.asset.alphAmount).toEqual(MINIMAL_CONTRACT_DEPOSIT);
+    });
+
+
+
+    it("set new pixel, reset one, add 2 and claim", async () => {
+      const contractResult = await deployPixelFactory(defaultSigner);
+      expect(contractResult).toBeDefined();
+      const factory = contractResult.contractInstance;
+      let px = PixelFactory.at(factory.address).maps.pixels;
+
+      let pxCounter = 0;
+      for (let x = 0; x < 4; x++) {
+        for (let y = 0; y < 4; y++) {
+          if (x === 3 && y === 3) continue; // keep the last pixel out
+
+          pxCounter++;
+          let tx = await factory.transact.setPixel({
+            args: {
+              x: BigInt(x),
+              y: BigInt(y),
+              color: stringToHex(`a3${y}fb${x}`),
+              amountFees: 2n * ONE_ALPH,
+            },
+            signer: await getRandomSigner(defaultGroup),
+            attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+          });
+          let pxSet = await px.get(cartesianToByteVec(Number(x), Number(y)))
+          expect(pxSet?.color).toEqual(stringToHex(`a3${y}fb${x}`))
+
+          // await waitForTxConfirmation(tx.txId,1, 1000)
+        }
+      }
+
+      let state = await factory.fetchState();
+      expect(state.fields.numPxMinted).toEqual(15n);
+      expect(pxCounter).toEqual(15);
+
+      await factory.transact.resetPixel({
+         args: {
+           x: BigInt(3),
+           y: BigInt(2),
+         },
+         signer: creator,
+         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
+       });
+
+       state = await factory.fetchState();
+       expect(state.fields.numPxMinted).toEqual(14n);
+
+      await factory.transact.setPixel({
+        args: {
+          x: BigInt(3),
+          y: BigInt(2),
+          color: stringToHex(`a3fb2`),
+          amountFees: 2n * ONE_ALPH,
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+      });
+
+      await factory.transact.setPixel({
+         args: {
+           x: BigInt(4),
+           y: BigInt(4),
+           color: stringToHex(`a3fb2`),
+           amountFees: 2n * ONE_ALPH,
+         },
+         signer: creator,
+         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+       });
      
 
       state = await factory.fetchState();

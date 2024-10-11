@@ -91,7 +91,7 @@ Contract PixelFactory(
 
    }
 
-   @using(checkExternalCaller = false)
+   @using(checkExternalCaller = false, updateFields = true)
    pub fn resetPixel(x: U256, y: U256) -> (){
       let coordinates = cartesianToByteVec(x,y)
       assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
@@ -99,7 +99,7 @@ Contract PixelFactory(
 
       pixels.remove!(pixel.firstMinter, coordinates)
 
-      // numPxMinted = numPxMinted - 1 not sure we reduce it because funds are still in the smart contract
+      numPxMinted = numPxMinted - 1 //not sure we reduce it because funds are still in the smart contract
       emit PixelReset(x, y)
    }
 
