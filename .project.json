@@ -12,15 +12,15 @@
   "infos": {
     "Pixel": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "9e9383e528b3cb7a6dd9837995cb43b7d58f1e44af428c3c34ec177ae88c719c",
+      "sourceCodeHash": "df5cc47f3598ab068ea630f10acd46502f18bf7cd871daa31641b48b433a644f",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
     "PixelFactory": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "9e9383e528b3cb7a6dd9837995cb43b7d58f1e44af428c3c34ec177ae88c719c",
+      "sourceCodeHash": "df5cc47f3598ab068ea630f10acd46502f18bf7cd871daa31641b48b433a644f",
       "bytecodeDebugPatch": "=20-2+99=1-3+223=313-1+2=133-1+5=62+7a7e0214696e73657274206174206d617020706174683a2000=270-2+31=182+7a7e021472656d6f7665206174206d617020706174683a2000=30",
-      "codeHashDebug": "aae1ee1f92c4687608e0c93cfb80b8ca868244da6d15f98268f6f083da1a32f5"
+      "codeHashDebug": "6ff073a5014466be30e373ab87a39b6fe98d64052d86213ecf7327354730ae4d"
     }
   }
 }

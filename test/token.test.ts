@@ -24,7 +24,7 @@ import {
 } from "./utils";
 import { PixelFactory } from "../artifacts/ts";
 
-jest.setTimeout(10*1000)
+jest.setTimeout(10 * 1000);
 describe("integration tests", () => {
   const defaultGroup = 0;
 
@@ -77,7 +77,7 @@ describe("integration tests", () => {
 
       const px = factory.maps.pixels;
 
-      console.log(await px.get(cartesianToByteVec(Number(x), Number(y))));
+
       expect(
         await px.contains(cartesianToByteVec(Number(x), Number(y)))
       ).toEqual(true);
@@ -229,6 +229,45 @@ describe("integration tests", () => {
         0
       );
     });
+
+    it("should not increase numPX", async () => {
+      const contractResult = await deployPixelFactory(defaultSigner);
+      expect(contractResult).toBeDefined();
+      const factory = contractResult.contractInstance;
+
+      let state = await PixelFactory.at(factory.address).fetchState();
+
+      const x = 2n;
+      const y = 3n;
+
+     await factory.transact.setPixel({
+        args: {
+          x: x,
+          y: y,
+          color: stringToHex("a3ffb4"),
+          amountFees: 2n * ONE_ALPH,
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+      });
+
+      state = await PixelFactory.at(factory.address).fetchState();
+      expect(state.fields.numPxMinted).toEqual(1n);
+
+      await factory.transact.setPixel({
+        args: {
+          x: x,
+          y: y,
+          color: stringToHex("a3ffb2"),
+          amountFees: 2n * ONE_ALPH,
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+      });
+
+      state = await PixelFactory.at(factory.address).fetchState();
+      expect(state.fields.numPxMinted).toEqual(1n);
+    });
   });
 
   describe("claiming", () => {
@@ -254,10 +293,9 @@ describe("integration tests", () => {
             signer: creator,
             attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
           });
-          let pxSet = await px.get(cartesianToByteVec(Number(x), Number(y)))
-          expect(pxSet?.color).toEqual(stringToHex(`a3${y}fb${x}`))
+          let pxSet = await px.get(cartesianToByteVec(Number(x), Number(y)));
+          expect(pxSet?.color).toEqual(stringToHex(`a3${y}fb${x}`));
 
-          // await waitForTxConfirmation(tx.txId,1, 1000)
         }
       }
 
@@ -267,23 +305,20 @@ describe("integration tests", () => {
 
       let tx = await factory.transact.setPixel({
         args: {
-          x: BigInt(4),
-          y: BigInt(4),
+          x: BigInt(3),
+          y: BigInt(3),
           color: stringToHex(`a3fb2`),
           amountFees: 2n * ONE_ALPH,
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
       });
-     
 
       state = await factory.fetchState();
       expect(state.fields.numPxMinted).toEqual(0n);
       expect(state.fields.balance).toEqual(0n);
       expect(state.asset.alphAmount).toEqual(MINIMAL_CONTRACT_DEPOSIT);
     });
-
-
 
     it("set new pixel, reset one, add 2 and claim", async () => {
       const contractResult = await deployPixelFactory(defaultSigner);
@@ -307,8 +342,8 @@ describe("integration tests", () => {
             signer: await getRandomSigner(defaultGroup),
             attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
           });
-          let pxSet = await px.get(cartesianToByteVec(Number(x), Number(y)))
-          expect(pxSet?.color).toEqual(stringToHex(`a3${y}fb${x}`))
+          let pxSet = await px.get(cartesianToByteVec(Number(x), Number(y)));
+          expect(pxSet?.color).toEqual(stringToHex(`a3${y}fb${x}`));
 
           // await waitForTxConfirmation(tx.txId,1, 1000)
         }
@@ -319,16 +354,16 @@ describe("integration tests", () => {
       expect(pxCounter).toEqual(15);
 
       await factory.transact.resetPixel({
-         args: {
-           x: BigInt(3),
-           y: BigInt(2),
-         },
-         signer: creator,
-         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
-       });
+        args: {
+          x: BigInt(3),
+          y: BigInt(2),
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
+      });
 
-       state = await factory.fetchState();
-       expect(state.fields.numPxMinted).toEqual(14n);
+      state = await factory.fetchState();
+      expect(state.fields.numPxMinted).toEqual(14n);
 
       await factory.transact.setPixel({
         args: {
@@ -342,16 +377,15 @@ describe("integration tests", () => {
       });
 
       await factory.transact.setPixel({
-         args: {
-           x: BigInt(4),
-           y: BigInt(4),
-           color: stringToHex(`a3fb2`),
-           amountFees: 2n * ONE_ALPH,
-         },
-         signer: creator,
-         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
-       });
-     
+        args: {
+          x: BigInt(3),
+          y: BigInt(3),
+          color: stringToHex(`a3fb2`),
+          amountFees: 2n * ONE_ALPH,
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH,
+      });
 
       state = await factory.fetchState();
       expect(state.fields.numPxMinted).toEqual(0n);
