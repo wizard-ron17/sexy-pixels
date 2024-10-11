@@ -69,7 +69,7 @@ Contract PixelFactory(
       let mut amountMint = amountFees
       if (!pixels.contains!(coordinates)){
          amountMint = amountFees - minimalContractDeposit!()
-
+         numPxMinted = numPxMinted + 1
          pixels.insert!(caller, coordinates, newPixel)
       }else{
          // set back the first minter
@@ -79,7 +79,6 @@ Contract PixelFactory(
          pixels[coordinates] = newPixel
       }
 
-      numPxMinted = numPxMinted + 1
       if(numPxMinted >= maxX * maxY){
          claim(caller)
       }else{
