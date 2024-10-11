@@ -25,7 +25,7 @@ Contract PixelFactory(
 
    @using(assetsInContract = true, updateFields = true)
    fn claim(caller: Address) -> (){
-      assert!(numPxMinted == maxX * maxY, ErrorCodes.NotFullyMinted)
+      assert!(numPxMinted >= maxX * maxY, ErrorCodes.NotFullyMinted)
 
       transferTokenFromSelf!(caller, ALPH, balance)
 
