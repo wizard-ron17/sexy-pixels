@@ -37,7 +37,10 @@ export async function deployPixelFactory(signer: SignerProvider) {
   return await PixelFactory.deploy(signer, {
     initialFields: {
       maxX: 4n,
-      maxY: 4n
+      maxY: 4n,
+      balance: 0n,
+      feesMint: 2n*ONE_ALPH,
+      numPxMinted: 0n
     },
     initialAttoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
   })

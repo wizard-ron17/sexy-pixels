@@ -43,6 +43,9 @@ export namespace PixelFactoryTypes {
   export type Fields = {
     maxX: bigint;
     maxY: bigint;
+    feesMint: bigint;
+    numPxMinted: bigint;
+    balance: bigint;
   };
 
   export type State = ContractState<Fields>;
@@ -56,6 +59,10 @@ export namespace PixelFactoryTypes {
   export type PixelResetEvent = ContractEvent<{ x: bigint; y: bigint }>;
 
   export interface CallMethodTable {
+    claim: {
+      params: CallContractParams<{ caller: Address }>;
+      result: CallContractResult<null>;
+    };
     coordByteVecToCartesian: {
       params: CallContractParams<{ coord: HexString }>;
       result: CallContractResult<[bigint, bigint]>;
@@ -69,7 +76,12 @@ export namespace PixelFactoryTypes {
       result: CallContractResult<Pixel>;
     };
     setPixel: {
-      params: CallContractParams<{ x: bigint; y: bigint; color: HexString }>;
+      params: CallContractParams<{
+        x: bigint;
+        y: bigint;
+        color: HexString;
+        amountFees: bigint;
+      }>;
       result: CallContractResult<null>;
     };
     resetPixel: {
@@ -94,6 +106,10 @@ export namespace PixelFactoryTypes {
   };
 
   export interface SignExecuteMethodTable {
+    claim: {
+      params: SignExecuteContractMethodParams<{ caller: Address }>;
+      result: SignExecuteScriptTxResult;
+    };
     coordByteVecToCartesian: {
       params: SignExecuteContractMethodParams<{ coord: HexString }>;
       result: SignExecuteScriptTxResult;
@@ -111,6 +127,7 @@ export namespace PixelFactoryTypes {
         x: bigint;
         y: bigint;
         color: HexString;
+        amountFees: bigint;
       }>;
       result: SignExecuteScriptTxResult;
     };
@@ -141,7 +158,12 @@ class Factory extends ContractFactory<
 
   eventIndex = { PixelSet: 0, PixelReset: 1 };
   consts = {
-    ErrorCodes: { OutsideGrid: BigInt("0"), PixelNotExist: BigInt("1") },
+    ErrorCodes: {
+      OutsideGrid: BigInt("0"),
+      PixelNotExist: BigInt("1"),
+      NotEnoughFunds: BigInt("2"),
+      NotFullyMinted: BigInt("3"),
+    },
   };
 
   at(address: string): PixelFactoryInstance {
@@ -149,6 +171,15 @@ class Factory extends ContractFactory<
   }
 
   tests = {
+    claim: async (
+      params: TestContractParams<
+        PixelFactoryTypes.Fields,
+        { caller: Address },
+        PixelFactoryTypes.Maps
+      >
+    ): Promise<TestContractResult<null, PixelFactoryTypes.Maps>> => {
+      return testMethod(this, "claim", params, getContractByCodeHash);
+    },
     coordByteVecToCartesian: async (
       params: TestContractParams<
         PixelFactoryTypes.Fields,
@@ -196,7 +227,7 @@ class Factory extends ContractFactory<
     setPixel: async (
       params: TestContractParams<
         PixelFactoryTypes.Fields,
-        { x: bigint; y: bigint; color: HexString },
+        { x: bigint; y: bigint; color: HexString; amountFees: bigint },
         PixelFactoryTypes.Maps
       >
     ): Promise<TestContractResult<null, PixelFactoryTypes.Maps>> => {
@@ -227,8 +258,8 @@ class Factory extends ContractFactory<
 export const PixelFactory = new Factory(
   Contract.fromJson(
     PixelFactoryContractJson,
-    "=18-2+4b=2-2+cf=259-1+3=111-1+d=38+7a7e0214696e73657274206174206d617020706174683a2000=215-1+d=182+7a7e021472656d6f7665206174206d617020706174683a2000=18",
-    "ae89e887ad24a3de2f8c2906a737113fd7324a13a027acfc8a363a6d5600b4fc",
+    "=20-2+99=1+2=1-2+d=313-1+2=132-2+11=50+7a7e0214696e73657274206174206d617020706174683a2000=283-1+d=182+7a7e021472656d6f7665206174206d617020706174683a2000=18",
+    "13c8b49159397c2192d56cbf2a640df82dd51be6a583aa16d879e6fecbb95e5e",
     AllStructs
   )
 );
@@ -296,6 +327,17 @@ export class PixelFactoryInstance extends ContractInstance {
   }
 
   view = {
+    claim: async (
+      params: PixelFactoryTypes.CallMethodParams<"claim">
+    ): Promise<PixelFactoryTypes.CallMethodResult<"claim">> => {
+      return callMethod(
+        PixelFactory,
+        this,
+        "claim",
+        params,
+        getContractByCodeHash
+      );
+    },
     coordByteVecToCartesian: async (
       params: PixelFactoryTypes.CallMethodParams<"coordByteVecToCartesian">
     ): Promise<
@@ -358,6 +400,11 @@ export class PixelFactoryInstance extends ContractInstance {
   };
 
   transact = {
+    claim: async (
+      params: PixelFactoryTypes.SignExecuteMethodParams<"claim">
+    ): Promise<PixelFactoryTypes.SignExecuteMethodResult<"claim">> => {
+      return signExecuteMethod(PixelFactory, this, "claim", params);
+    },
     coordByteVecToCartesian: async (
       params: PixelFactoryTypes.SignExecuteMethodParams<"coordByteVecToCartesian">
     ): Promise<
