@@ -1,70 +1,62 @@
-# Getting Started with Create React App
+# My Next.js dApp with pages router
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This template monorepo was designed to provide a developer-friendly experience to Alephium ecosystem newcomers. It is split into 2 parts:
 
-## Available Scripts
+- app: contains the Next.js frontend part of the dApp
+- contracts: contains the dApp contracts
 
-In the project directory, you can run:
+It uses **yarn workspaces** to manage both app and contract projects from the monorepo root.
 
-### `npm start`
+## Local development
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+To get started quickly, follow these steps:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Set up a devnet
 
-### `npm test`
+Start a local devnet for testing and development. Please refer to the [Getting Started documentation](https://docs.alephium.org/full-node/getting-started#devnet).
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Install dependencies
 
-### `npm run build`
+```
+yarn install
+```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Compile the contracts
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+```
+yarn compile
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### Deploy the contracts
 
-### `npm run eject`
+```
+yarn deploy
+```
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### Build the contracts package
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+```
+yarn build:contracts
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### Run the app
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```
+yarn dev
+```
 
-## Learn More
+### Install an Alephium wallet
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Download an [Alephium wallet](https://alephium.org/#wallets), and connect it to your devnet dApp.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Testnet, Mainnet, and More
 
-### Code Splitting
+You could use yarn workspace to run commands in the contracts or app directory.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+```
+yarn <my-contracts|my-dapp> <command>
+```
 
-### Analyzing the Bundle Size
+You could also get some testnet tokens from the [Faucet](https://docs.alephium.org/infrastructure/public-services/#testnet-faucet).
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+To learn more about smart contract development on Alephium, take a look at the [documentation](https://docs.alephium.org/dapps/).
