@@ -1,6 +1,6 @@
 import { Deployer, DeployFunction, Network } from '@alephium/cli'
 import { Settings } from '../alephium.config'
-import { TokenFaucet } from '../artifacts/ts'
+import { PixelFactory } from '../artifacts/ts'
 import { stringToHex } from '@alephium/web3'
 
 // This deploy function will be called by cli deployment tool automatically
@@ -10,18 +10,14 @@ const deployFaucet: DeployFunction<Settings> = async (
   network: Network<Settings>
 ): Promise<void> => {
   // Get settings
-  const issueTokenAmount = network.settings.issueTokenAmount
-  const result = await deployer.deployContract(TokenFaucet, {
-    // The amount of token to be issued
-    issueTokenAmount: issueTokenAmount,
-    // The initial states of the faucet contract
-    initialFields: {
-      symbol: stringToHex('TF'),
-      name: stringToHex('TokenFaucet'),
-      decimals: 18n,
-      supply: issueTokenAmount,
-      balance: issueTokenAmount
-    }
+  const result = await deployer.deployContract(PixelFactory, {
+     initialFields: {
+        maxX: 10n,
+        maxY: 10n,
+        feesMint: 0n,
+        numPxMinted: 0n,
+        balance: 0n
+     }
   })
   console.log('Token faucet contract id: ' + result.contractInstance.contractId)
   console.log('Token faucet contract address: ' + result.contractInstance.address)
