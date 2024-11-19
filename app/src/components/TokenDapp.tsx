@@ -141,11 +141,11 @@ console.log(contractState)
          
          const result = await mintPx(
            signer,
-           withdrawAmount,
-           config.faucetTokenId,
+           contractState.fields.tokenIdToBurn,
            getGridCoordinates(selectedPixel)[0],
            getGridCoordinates(selectedPixel)[1],
-           selectedColor
+           selectedColor,
+           contractState.fields.burnMint
          );
 
          setOngoingTxId(result.txId)
@@ -190,6 +190,7 @@ console.log(contractState)
 
       {loading && <p style={{color: "whitesmoke"}}>Loading the grid</p>}
       {contractState !== null && <p style={{color: "whitesmoke"}}>Minted px so far: {Number(contractState.fields.numPxMinted)}/{gridSize}</p>}
+      {contractState !== null && <p style={{color: "whitesmoke"}}>Minted px so far: {Number(contractState.fields.balanceBurn)}</p>}
 
         <main>
           <div id={gridStyles.gridContainer}>
@@ -204,7 +205,7 @@ console.log(contractState)
               </span>
               <h2>
                 Select a color for pixel at {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${selectedPixel &&getGridCoordinates(selectedPixel)[1]}`}{" "}
-                - Cost: {contractState !== null ? (0.1+Number(contractState.fields.feesMint/ONE_ALPH)).toString() : '0'}
+                - Cost: {contractState !== null ? (0.1+Number(contractState.fields.burnMint/ONE_ALPH)).toString() : '0'}
               </h2>
               <div id="colorOptions">
                 {colors.map((color) => (
