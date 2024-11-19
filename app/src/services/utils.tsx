@@ -2,7 +2,7 @@ import { hexToString, NetworkId, web3 } from "@alephium/web3";
 import { PixelFactoryTypes } from "my-contracts";
 import { loadDeployments } from "my-contracts/deployments"
 
-web3.setCurrentNodeProvider("https://fullnode-testnet.alephium.notrustverify.ch", undefined, undefined);
+web3.setCurrentNodeProvider((process.env.NODE_URL as string) ?? "https://fullnode-testnet.alephium.notrustverify.ch", undefined, undefined);
 
 export interface TokenFaucetConfig {
   network: NetworkId
