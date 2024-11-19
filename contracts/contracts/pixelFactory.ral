@@ -1,0 +1,117 @@
+struct Pixel {
+   mut color: ByteVec, //hex color
+   mut firstMinter: Address // used to send back the alph back when removed
+}
+
+Contract PixelFactory(
+   maxX: U256,
+   maxY: U256,
+   burnMint: U256,
+   tokenIdToBurn: ByteVec,
+   mut numPxMinted: U256,
+   mut balanceBurn: U256
+){
+   
+   mapping[ByteVec, Pixel] pixels
+   
+   event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec)
+   event PixelReset(x: U256, y: U256)
+   event PixelReplaced(x: U256, y: U256, color: ByteVec)
+
+   enum ErrorCodes {
+      OutsideGrid = 0
+      PixelNotExist = 1
+      NotEnoughFunds = 2
+   }
+
+   pub fn coordByteVecToCartesian(coord: ByteVec) -> (U256, U256) {
+      assert!(size!(coord) % 4 == 0, 0)
+
+      let offsetX = 0
+      let offSetY = 4
+
+      let x = byteVecSlice!(coord, offsetX, offsetX + 4)
+      let y = byteVecSlice!(coord, offSetY, offSetY + 4)
+
+      return u256From4Byte!(x), u256From4Byte!(y)
+   }
+
+   pub fn cartesianToByteVec(x: U256, y: U256) -> ByteVec {
+      return u256To4Byte!(x) ++ u256To4Byte!(y)
+   }
+
+   pub fn getPixelFromCoordinates(x: U256, y: U256) -> Pixel{
+      return pixels[cartesianToByteVec(x, y)]
+   }
+
+   @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
+   pub fn setPixel(x: U256, y: U256, color: ByteVec, amountToBurn: U256) -> (){
+      assert!(x < maxX && y < maxY,ErrorCodes.OutsideGrid)
+      assert!(amountToBurn >= burnMint, ErrorCodes.NotEnoughFunds)
+
+      let caller = callerAddress!()
+
+      let coordinates = cartesianToByteVec(x,y)
+      let mut newPixel = Pixel {
+         color: color,
+         firstMinter: caller
+      }
+
+      let mut amountBurned = amountToBurn
+      if (!pixels.contains!(coordinates)){
+         if(tokenIdToBurn == ALPH && burnMint > 0) {
+            amountBurned = amountToBurn - minimalContractDeposit!()
+         }
+         numPxMinted = numPxMinted + 1
+         pixels.insert!(caller, coordinates, newPixel)
+      }else{
+         // set back the first minter
+         let pixel = pixels[coordinates]
+         let firstMinter = pixel.firstMinter
+         newPixel.firstMinter = firstMinter
+         pixels[coordinates] = newPixel
+      }
+      
+      balanceBurn = amountBurned + balanceBurn
+      if(burnMint > 0){
+         burnToken!(caller, tokenIdToBurn, amountBurned)
+      }
+      
+
+      emit PixelSet(caller, x, y, color) 
+
+   }
+
+   @using(checkExternalCaller = false, updateFields = true)
+   pub fn resetPixel(x: U256, y: U256) -> (){
+      let coordinates = cartesianToByteVec(x,y)
+      assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
+      let pixel = pixels[coordinates]
+
+      pixels.remove!(pixel.firstMinter, coordinates)
+
+      numPxMinted = numPxMinted - 1 //not sure we reduce it because funds are still in the smart contract
+      emit PixelReset(x, y)
+   }
+
+   @using(checkExternalCaller = false)
+   pub fn replacePixel(x: U256, y: U256, color: ByteVec) -> (){
+      let coordinates = cartesianToByteVec(x,y)
+      assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
+
+      let pixel = pixels[coordinates]
+
+      let mut newPixel = Pixel {
+         color: color,
+         firstMinter: pixel.firstMinter
+      }
+
+      newPixel.color = color
+      pixels[coordinates] = newPixel
+
+
+      emit PixelReplaced(x, y, color)
+   }
+   
+
+}

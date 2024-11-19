@@ -1,0 +1,17 @@
+[
+  {
+    "name": "Pixel",
+    "fieldNames": [
+      "color",
+      "firstMinter"
+    ],
+    "fieldTypes": [
+      "ByteVec",
+      "Address"
+    ],
+    "isMutable": [
+      true,
+      true
+    ]
+  }
+]
