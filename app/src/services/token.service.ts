@@ -8,7 +8,6 @@ export const mintPx = async (signerProvider: SignerProvider, tokenId: string, x:
          x: BigInt(x),
          y: BigInt(y),
          color: stringToHex(color.split('#')[1]),
-         amountFees: 0n,
          amountToBurn: amountToBurn
       },
       signer: signerProvider,
@@ -20,4 +19,18 @@ export const mintPx = async (signerProvider: SignerProvider, tokenId: string, x:
    })
    
  }
+
+
+ export const resetPx = async (signerProvider: SignerProvider, tokenId: string, x: number, y: number, color: string,amountToBurn: bigint): Promise<ExecuteScriptResult> => {
+
+   return await contractFactory.transact.resetPixel({
+      args: {
+         x: BigInt(x),
+         y: BigInt(y)
+      },
+      signer: signerProvider,
+      attoAlphAmount: 3n*DUST_AMOUNT
+   })
+   
+}
 

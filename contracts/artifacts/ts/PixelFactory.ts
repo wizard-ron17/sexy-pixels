@@ -58,11 +58,6 @@ export namespace PixelFactoryTypes {
     color: HexString;
   }>;
   export type PixelResetEvent = ContractEvent<{ x: bigint; y: bigint }>;
-  export type PixelReplacedEvent = ContractEvent<{
-    x: bigint;
-    y: bigint;
-    color: HexString;
-  }>;
 
   export interface CallMethodTable {
     coordByteVecToCartesian: {
@@ -88,10 +83,6 @@ export namespace PixelFactoryTypes {
     };
     resetPixel: {
       params: CallContractParams<{ x: bigint; y: bigint }>;
-      result: CallContractResult<null>;
-    };
-    replacePixel: {
-      params: CallContractParams<{ x: bigint; y: bigint; color: HexString }>;
       result: CallContractResult<null>;
     };
   }
@@ -137,14 +128,6 @@ export namespace PixelFactoryTypes {
       params: SignExecuteContractMethodParams<{ x: bigint; y: bigint }>;
       result: SignExecuteScriptTxResult;
     };
-    replacePixel: {
-      params: SignExecuteContractMethodParams<{
-        x: bigint;
-        y: bigint;
-        color: HexString;
-      }>;
-      result: SignExecuteScriptTxResult;
-    };
   }
   export type SignExecuteMethodParams<T extends keyof SignExecuteMethodTable> =
     SignExecuteMethodTable[T]["params"];
@@ -166,7 +149,7 @@ class Factory extends ContractFactory<
     );
   }
 
-  eventIndex = { PixelSet: 0, PixelReset: 1, PixelReplaced: 2 };
+  eventIndex = { PixelSet: 0, PixelReset: 1 };
   consts = {
     ErrorCodes: {
       OutsideGrid: BigInt("0"),
@@ -242,15 +225,6 @@ class Factory extends ContractFactory<
     ): Promise<TestContractResult<null, PixelFactoryTypes.Maps>> => {
       return testMethod(this, "resetPixel", params, getContractByCodeHash);
     },
-    replacePixel: async (
-      params: TestContractParams<
-        PixelFactoryTypes.Fields,
-        { x: bigint; y: bigint; color: HexString },
-        PixelFactoryTypes.Maps
-      >
-    ): Promise<TestContractResult<null, PixelFactoryTypes.Maps>> => {
-      return testMethod(this, "replacePixel", params, getContractByCodeHash);
-    },
   };
 
   stateForTest(
@@ -267,8 +241,8 @@ class Factory extends ContractFactory<
 export const PixelFactory = new Factory(
   Contract.fromJson(
     PixelFactoryContractJson,
-    "=18-1=1-1=1-2=2-1=1+b4292=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=254-2+31=182+7a7e021472656d6f7665206174206d617020706174683a2000=300",
-    "d65ec50587cd1f559f79df2eff205cdb0061dcbccdb571145090398aea2d3f05",
+    "=18-1=1-1=1-2+420b=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=254-2+31=182+7a7e021472656d6f7665206174206d617020706174683a2000=30",
+    "ff420913e787eb6d4fb306dc5fd69aa489dce17b504652878bc26abbf45e2d31",
     AllStructs
   )
 );
@@ -322,24 +296,9 @@ export class PixelFactoryInstance extends ContractInstance {
     );
   }
 
-  subscribePixelReplacedEvent(
-    options: EventSubscribeOptions<PixelFactoryTypes.PixelReplacedEvent>,
-    fromCount?: number
-  ): EventSubscription {
-    return subscribeContractEvent(
-      PixelFactory.contract,
-      this,
-      options,
-      "PixelReplaced",
-      fromCount
-    );
-  }
-
   subscribeAllEvents(
     options: EventSubscribeOptions<
-      | PixelFactoryTypes.PixelSetEvent
-      | PixelFactoryTypes.PixelResetEvent
-      | PixelFactoryTypes.PixelReplacedEvent
+      PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent
     >,
     fromCount?: number
   ): EventSubscription {
@@ -411,17 +370,6 @@ export class PixelFactoryInstance extends ContractInstance {
         getContractByCodeHash
       );
     },
-    replacePixel: async (
-      params: PixelFactoryTypes.CallMethodParams<"replacePixel">
-    ): Promise<PixelFactoryTypes.CallMethodResult<"replacePixel">> => {
-      return callMethod(
-        PixelFactory,
-        this,
-        "replacePixel",
-        params,
-        getContractByCodeHash
-      );
-    },
   };
 
   transact = {
@@ -470,11 +418,6 @@ export class PixelFactoryInstance extends ContractInstance {
       params: PixelFactoryTypes.SignExecuteMethodParams<"resetPixel">
     ): Promise<PixelFactoryTypes.SignExecuteMethodResult<"resetPixel">> => {
       return signExecuteMethod(PixelFactory, this, "resetPixel", params);
-    },
-    replacePixel: async (
-      params: PixelFactoryTypes.SignExecuteMethodParams<"replacePixel">
-    ): Promise<PixelFactoryTypes.SignExecuteMethodResult<"replacePixel">> => {
-      return signExecuteMethod(PixelFactory, this, "replacePixel", params);
     },
   };
 

@@ -16,7 +16,6 @@ Contract PixelFactory(
    
    event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec)
    event PixelReset(x: U256, y: U256)
-   event PixelReplaced(x: U256, y: U256, color: ByteVec)
 
    enum ErrorCodes {
       OutsideGrid = 0
@@ -94,24 +93,5 @@ Contract PixelFactory(
       emit PixelReset(x, y)
    }
 
-   @using(checkExternalCaller = false)
-   pub fn replacePixel(x: U256, y: U256, color: ByteVec) -> (){
-      let coordinates = cartesianToByteVec(x,y)
-      assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
-
-      let pixel = pixels[coordinates]
-
-      let mut newPixel = Pixel {
-         color: color,
-         firstMinter: pixel.firstMinter
-      }
-
-      newPixel.color = color
-      pixels[coordinates] = newPixel
-
-
-      emit PixelReplaced(x, y, color)
-   }
-   
 
 }
