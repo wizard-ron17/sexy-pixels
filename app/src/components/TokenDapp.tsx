@@ -138,7 +138,7 @@ console.log(contractState)
       });
 
       if (signer) {
-         
+         if(contractState !== null){
          const result = await mintPx(
            signer,
            contractState.fields.tokenIdToBurn,
@@ -149,6 +149,7 @@ console.log(contractState)
          );
 
          setOngoingTxId(result.txId)
+      }
       }
       setModalVisible(false);
       setSelectedColor(null);
@@ -190,7 +191,7 @@ console.log(contractState)
 
       {loading && <p style={{color: "whitesmoke"}}>Loading the grid</p>}
       {contractState !== null && <p style={{color: "whitesmoke"}}>Minted px so far: {Number(contractState.fields.numPxMinted)}/{gridSize}</p>}
-      {contractState !== null && <p style={{color: "whitesmoke"}}>Minted px so far: {Number(contractState.fields.balanceBurn)}</p>}
+      {contractState !== null && <p style={{color: "whitesmoke"}}>Burned tokens so far: {Number(contractState.fields.balanceBurn)}</p>}
 
         <main>
           <div id={gridStyles.gridContainer}>
