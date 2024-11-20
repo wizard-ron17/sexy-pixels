@@ -45,7 +45,7 @@ Contract PixelFactory(
 
    @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
    pub fn setPixel(x: U256, y: U256, color: ByteVec, amountToBurn: U256) -> (){
-      assert!(x < maxX && y < maxY,ErrorCodes.OutsideGrid)
+      assert!(x <= maxX && y <= maxY,ErrorCodes.OutsideGrid)
       assert!(amountToBurn >= burnMint, ErrorCodes.NotEnoughFunds)
 
       let caller = callerAddress!()
