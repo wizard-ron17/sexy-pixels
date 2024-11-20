@@ -128,34 +128,30 @@ console.log(contractState)
 
   const handleColorSubmit = useCallback(async () => {
     if (selectedPixel !== null && selectedColor) {
-
-
       setPixels((prevPixels) => {
         const newPixels = [...prevPixels];
         newPixels[selectedPixel] = selectedColor;
-
         return newPixels;
       });
 
-      if (signer) {
-         if(contractState !== null){
-         const result = await mintPx(
-           signer,
-           contractState.fields.tokenIdToBurn,
-           getGridCoordinates(selectedPixel)[0],
-           getGridCoordinates(selectedPixel)[1],
-           selectedColor,
-           contractState.fields.burnMint
-         );
+      if (signer && contractState !== null) {
+        // Get 1-based coordinates
+        const [x, y] = getGridCoordinates(selectedPixel);
+        // Convert to BigInt and subtract 1 to make 0-based
+        const result = await mintPx(
+          signer,
+          contractState.fields.tokenIdToBurn,
+          BigInt(x - 1),  // Convert to BigInt after subtraction
+          BigInt(y - 1),  // Convert to BigInt after subtraction
+          selectedColor,
+          contractState.fields.burnMint
+        );
 
-         setOngoingTxId(result.txId)
-      }
+        setOngoingTxId(result.txId)
       }
       setModalVisible(false);
       setSelectedColor(null);
       setSelectedPixel(null);
-
-      
     }
   }, [selectedPixel, selectedColor]);
 
