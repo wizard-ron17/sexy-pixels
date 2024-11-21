@@ -4,10 +4,9 @@ import gridStyles from "../styles/App.module.css";
 import { TxStatus } from "./TxStatus";
 import { useWallet } from "@alephium/web3-react";
 import { hexToString, node, ONE_ALPH } from "@alephium/web3";
-import { contractFactory, getGridCoordinates, getIndexFromCoordinates, getPx, gridSize, TokenFaucetConfig } from "@/services/utils";
+import { contractFactory, getGridCoordinates, getIndexFromCoordinates, getPx, getTokenList, gridSize, TokenFaucetConfig, Token } from "@/services/utils";
 import { mintPx } from "@/services/token.service";
 import { PixelFactoryTypes } from "my-contracts";
-import { tokenList } from '@alephium/token-list'
 import styles from '../styles/Stats.module.css';
 
 const colors = [
@@ -46,6 +45,7 @@ export const TokenDapp: FC<{
   const [loading, setLoading] = useState(true); // Loading state
   const [eventData, setEventData] = useState<PixelFactoryTypes.PixelSetEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [tokenMetadata, setTokenMetadata] = useState<Token | undefined>()
 
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<unknown> => {
@@ -74,7 +74,6 @@ export const TokenDapp: FC<{
          const indexNewPx = getIndexFromCoordinates(Number(event.fields.x),Number(event.fields.y))
          setPixels((prevPixels) => {
             const newPixels = [...prevPixels];
-            console.log(newPixels)
             newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`
     
             return newPixels;
@@ -101,8 +100,12 @@ export const TokenDapp: FC<{
 
 useEffect(() => {
    const initializePixels = async () => {
-      setContractState(await contractFactory.fetchState())
+      const contractState = await contractFactory.fetchState()
+      const tokenList = await getTokenList()
 
+      setContractState(contractState)
+      setTokenMetadata(tokenList?.find((token) => token.id === contractState.fields.tokenIdToBurn))
+      console.log(contractState.fields.tokenIdToBurn)
      // const initialPixels = await getPx();
      
      // console.log(initialPixels)
@@ -112,7 +115,6 @@ useEffect(() => {
 
    initializePixels();
  }, []);
-console.log(contractState)
   const handlePixelClick = useCallback(
 
     (index: number) => {
@@ -143,8 +145,8 @@ console.log(contractState)
         const result = await mintPx(
           signer,
           contractState.fields.tokenIdToBurn,
-          BigInt(x),  // Convert to BigInt after subtraction
-          BigInt(y),  // Convert to BigInt after subtraction
+          x,  // Convert to BigInt after subtraction
+          y,  // Convert to BigInt after subtraction
           selectedColor,
           contractState.fields.burnMint
         );
@@ -176,7 +178,6 @@ console.log(contractState)
       )),
     [pixels, handlePixelClick]
   );
-
   console.log("ongoing..", ongoingTxId);
   return (
     <>
@@ -199,7 +200,7 @@ console.log(contractState)
           <div className={styles.statBox}>
             <div className={styles.statLabel}>Tokens Burned</div>
             <div className={styles.statValue}>
-              {Number(contractState.fields.balanceBurn) / Math.pow(10, 18)} SWAPA
+              {tokenMetadata !== undefined ? `${Number(contractState.fields.balanceBurn) / 10**tokenMetadata?.decimals} ${tokenMetadata.symbol}` : 0} 
             </div>
           </div>
         </div>
@@ -218,7 +219,7 @@ console.log(contractState)
               </span>
               <h2>
                 Select a color for pixel at {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${selectedPixel &&getGridCoordinates(selectedPixel)[1]}`}{" "}
-                - Cost: {contractState !== null ? (0.1+Number(contractState.fields.burnMint/ONE_ALPH)).toString() : '0'}
+                - Cost: 0.1 ALPH {contractState !== null && tokenMetadata !== undefined ? `${(Number(contractState.fields.burnMint)/10**tokenMetadata.decimals)} ${tokenMetadata?.symbol}` : '0'}
               </h2>
               <div id="colorOptions">
                 {colors.map((color) => (
