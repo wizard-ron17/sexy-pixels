@@ -10,6 +10,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@alephium/token-list": "^0.0.20",
     "@alephium/web3": "^1.8.5",
     "@alephium/web3-react": "^1.8.5",
     "my-contracts": "0.1.0",

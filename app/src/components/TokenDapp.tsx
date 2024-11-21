@@ -7,6 +7,8 @@ import { hexToString, node, ONE_ALPH } from "@alephium/web3";
 import { contractFactory, getGridCoordinates, getIndexFromCoordinates, getPx, gridSize, TokenFaucetConfig } from "@/services/utils";
 import { mintPx } from "@/services/token.service";
 import { PixelFactoryTypes } from "my-contracts";
+import { tokenList } from '@alephium/token-list'
+import styles from '../styles/Stats.module.css';
 
 const colors = [
   "#FF5733",
@@ -101,10 +103,10 @@ useEffect(() => {
    const initializePixels = async () => {
       setContractState(await contractFactory.fetchState())
 
-     const initialPixels = await getPx();
+     // const initialPixels = await getPx();
      
-     console.log(initialPixels)
-     setPixels(initialPixels);
+     // console.log(initialPixels)
+     // setPixels(initialPixels);
      setLoading(false); // Stop loading once initialized
    };
 
@@ -141,8 +143,8 @@ console.log(contractState)
         const result = await mintPx(
           signer,
           contractState.fields.tokenIdToBurn,
-          BigInt(x - 1),  // Convert to BigInt after subtraction
-          BigInt(y - 1),  // Convert to BigInt after subtraction
+          BigInt(x),  // Convert to BigInt after subtraction
+          BigInt(y),  // Convert to BigInt after subtraction
           selectedColor,
           contractState.fields.burnMint
         );
@@ -186,8 +188,22 @@ console.log(contractState)
    
 
       {loading && <p style={{color: "whitesmoke"}}>Loading the grid</p>}
-      {contractState !== null && <p style={{color: "whitesmoke"}}>Minted px so far: {Number(contractState.fields.numPxMinted)}/{gridSize}</p>}
-      {contractState !== null && <p style={{color: "whitesmoke"}}>Burned tokens so far: {Number(contractState.fields.balanceBurn)}</p>}
+      {contractState !== null && (
+        <div className={styles.statsContainer}>
+          <div className={styles.statBox}>
+            <div className={styles.statLabel}>Minted Pixels</div>
+            <div className={styles.statValue}>
+              {Number(contractState.fields.numPxMinted)}/{gridSize * gridSize}
+            </div>
+          </div>
+          <div className={styles.statBox}>
+            <div className={styles.statLabel}>Tokens Burned</div>
+            <div className={styles.statValue}>
+              {Number(contractState.fields.balanceBurn) / Math.pow(10, 18)} SWAPA
+            </div>
+          </div>
+        </div>
+      )}
 
         <main>
           <div id={gridStyles.gridContainer}>

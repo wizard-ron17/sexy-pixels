@@ -1,0 +1,28 @@
+.statsContainer {
+  display: flex;
+  gap: 2rem;
+  margin-bottom: .7rem;
+}
+
+.statBox {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 12px;
+  padding: .8rem 1rem;
+  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+  margin-top: .7rem;
+}
+
+.statLabel {
+  font-size: 0.9rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+
+.statValue {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #fff;
+} 
