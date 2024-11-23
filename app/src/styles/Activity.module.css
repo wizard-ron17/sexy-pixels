@@ -1,0 +1,56 @@
+.container {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.leaderboard {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  margin-bottom: 24px;
+  width: 100%;
+}
+
+.leaderboardTitle {
+  margin-bottom: 16px;
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.leaderboardList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboardItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.leaderboardItem:hover {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.rank {
+  font-weight: bold;
+  min-width: 30px;
+  color: #fff;
+}
+
+.address {
+  font-family: monospace;
+  color: #fff;
+}
+
+.count {
+  margin-left: auto;
+  color: #00ff00;
+  font-weight: bold;
+} 
