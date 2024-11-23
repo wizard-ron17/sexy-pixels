@@ -13,15 +13,15 @@
   "infos": {
     "Pixel": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "7bb299a161305c9137f3c9c2a728df0b2876e64b402ce57e6173f03c1a55e85d",
+      "sourceCodeHash": "c957d9a5164919def7ebf96b790014a8c89e8f99f4326e37fb04be66387c8ad0",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
     "PixelFactory": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "7bb299a161305c9137f3c9c2a728df0b2876e64b402ce57e6173f03c1a55e85d",
-      "bytecodeDebugPatch": "=18-1=1-1=1-2+420b=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=254-2+31=182+7a7e021472656d6f7665206174206d617020706174683a2000=30",
-      "codeHashDebug": "03855cfd6031249c671b9a326f7766dd55ef9854cc9b734dea02743500cea8e7"
+      "sourceCodeHash": "c957d9a5164919def7ebf96b790014a8c89e8f99f4326e37fb04be66387c8ad0",
+      "bytecodeDebugPatch": "=18-1=1-1=1-2+420e=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=255-1+3=182+7a7e021472656d6f7665206174206d617020706174683a2000=36",
+      "codeHashDebug": "55cdb6e7a3748436883730ef42f00f9eedc027946b384b38bc90d2faf3f87aeb"
     }
   }
 }

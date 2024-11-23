@@ -15,7 +15,7 @@ Contract PixelFactory(
    mapping[ByteVec, Pixel] pixels
    
    event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec)
-   event PixelReset(x: U256, y: U256)
+   event PixelReset(caller: Address, firstMinter: Address, x: U256, y: U256)
 
    enum ErrorCodes {
       OutsideGrid = 0
@@ -90,7 +90,7 @@ Contract PixelFactory(
       pixels.remove!(pixel.firstMinter, coordinates)
 
       numPxMinted = numPxMinted - 1 //not sure we reduce it because funds are still in the smart contract
-      emit PixelReset(x, y)
+      emit PixelReset(callerAddress!(), pixel.firstMinter, x, y)
    }
 
 

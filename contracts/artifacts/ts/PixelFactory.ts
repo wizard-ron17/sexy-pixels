@@ -57,7 +57,12 @@ export namespace PixelFactoryTypes {
     y: bigint;
     color: HexString;
   }>;
-  export type PixelResetEvent = ContractEvent<{ x: bigint; y: bigint }>;
+  export type PixelResetEvent = ContractEvent<{
+    caller: Address;
+    firstMinter: Address;
+    x: bigint;
+    y: bigint;
+  }>;
 
   export interface CallMethodTable {
     coordByteVecToCartesian: {
@@ -241,8 +246,8 @@ class Factory extends ContractFactory<
 export const PixelFactory = new Factory(
   Contract.fromJson(
     PixelFactoryContractJson,
-    "=18-1=1-1=1-2+420b=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=254-2+31=182+7a7e021472656d6f7665206174206d617020706174683a2000=30",
-    "03855cfd6031249c671b9a326f7766dd55ef9854cc9b734dea02743500cea8e7",
+    "=18-1=1-1=1-2+420e=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=255-1+3=182+7a7e021472656d6f7665206174206d617020706174683a2000=36",
+    "55cdb6e7a3748436883730ef42f00f9eedc027946b384b38bc90d2faf3f87aeb",
     AllStructs
   )
 );

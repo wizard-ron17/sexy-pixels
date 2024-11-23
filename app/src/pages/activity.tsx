@@ -2,6 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import { AlephiumConnectButton } from '@alephium/web3-react'
 import gridStyles from "../styles/App.module.css"
+import { ActivityEvents } from '@/components/Activity'
 
 export default function Activity() {
   return (
@@ -23,7 +24,7 @@ export default function Activity() {
         </header>
         <main>
           <h2>Activity Feed</h2>
-          {/* Add your activity feed content here */}
+          <ActivityEvents/>
         </main>
       </div>
     </>
