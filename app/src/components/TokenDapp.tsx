@@ -224,8 +224,12 @@ export const TokenDapp: FC<{
   }, [selectedPixel, selectedColor]);
 
   const handleResetSubmit = async () => {
-    if (!selectedPixel) return;
+    console.log("resetting pixel");
+    console.log("resetting pixel at", selectedPixel);
+
+    if (selectedPixel != 0 && !selectedPixel) return;
     const [x, y] = getGridCoordinates(selectedPixel);
+
     setPixels((prevPixels) => {
       const newPixels = [...prevPixels];
       newPixels[selectedPixel] = "#333";
@@ -339,8 +343,9 @@ export const TokenDapp: FC<{
                 />
               ))}
             </div>
-            <button id="submitColor" onClick={handleColorSubmit}>
-              Submit
+            <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
+            {selectedColor ? 'Mint' : 'Choose a color'}
+
             </button>
           </div>
         </div>
@@ -349,18 +354,44 @@ export const TokenDapp: FC<{
       {modalVisible && isResetModal && (
         <div className={gridStyles.modal}>
           <div className={gridStyles.modalContent}>
-            <span className={gridStyles.close} onClick={closeModal}>
+          <span className={gridStyles.close} onClick={closeModal}>
               &times;
             </span>
-            <h2>
-              Reset pixel at{" "}
+          <h2>
+              Change pixel at{" "}
               {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${
                 selectedPixel && getGridCoordinates(selectedPixel)[1]
               }`}
             </h2>
-            <p>You will reset this pixel to its default state</p>
+            {selectedColor && <p>
+              You will burn:{" "}
+              {contractState !== null && tokenMetadata !== undefined
+                ? `${
+                    Number(contractState.fields.burnMint) /
+                    10 ** tokenMetadata.decimals
+                  } ${tokenMetadata?.symbol}`
+                : "0"}
+            </p>}
+          <div id="colorOptions">
+              {colors.map((color) => (
+                <div
+                  key={color}
+                  className={`${gridStyles.colorOption} ${
+                    selectedColor === color ? gridStyles.selected : ""
+                  }`}
+                  style={{ backgroundColor: color }}
+                  onClick={() => handleColorClick(color)}
+                />
+              ))}
+            </div>
+           
+            
             <button id="resetColor" onClick={handleResetSubmit}>
               Reset Pixel
+            </button>
+            &nbsp;
+            <button id="submitColor" onClick={handleColorSubmit}>
+              Recolor Pixel
             </button>
           </div>
         </div>

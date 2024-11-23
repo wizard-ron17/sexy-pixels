@@ -570,6 +570,11 @@ blockquote footer {
    background-color: #009f35;
  }
 
+ #submitColor:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+} 
+
 /* Add mobile styles */
 @media (max-width: 768px) {
   header {
