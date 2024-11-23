@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { FC, useState } from "react";
 import gridStyles from "../styles/App.module.css";
 import { TxStatus } from "./TxStatus";
-import { useBalance, useConnect, useWallet } from "@alephium/web3-react";
+import { AlephiumConnectButton, useBalance, useConnect, useWallet } from "@alephium/web3-react";
 import { addressFromTokenId, hexToString, node, ONE_ALPH } from "@alephium/web3";
 import {
   contractFactory,
@@ -43,6 +43,8 @@ type PixelEvent =
   | (PixelFactoryTypes.PixelSetEvent & { type: 'set' })
   | (PixelFactoryTypes.PixelResetEvent & { type: 'reset' });
 
+
+
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
@@ -65,6 +67,8 @@ export const TokenDapp: FC<{
   const [eventCounter, setEventCounter] = useState(0)
   const [contractEventsCount, setContractEventsCount] = useState(0)
   const [eventsReceived, setEventsReceived] = useState<PixelEvent[]>([])
+  const [showConnectMessage, setShowConnectMessage] = useState(false);
+  const [pendingPixelClick, setPendingPixelClick] = useState<number | null>(null);
 
   useEffect(() => {
     async function subscribeEvent() {
@@ -138,7 +142,7 @@ export const TokenDapp: FC<{
   }, [eventCounter, contractEventsCount, eventsReceived]);
 
   useEffect(() => {
-    if(connectionStatus === "connected" && contractState !== null){
+    if(connectionStatus === "connected" && contractState !== null && balance !== undefined){
       const tokenBalanceWallet = balance.tokenBalances?.find(
         (token: { id: string; }) => token.id === contractState.fields.tokenIdToBurn
       )
@@ -168,6 +172,12 @@ export const TokenDapp: FC<{
   }, []);
   const handlePixelClick = useCallback(
     (index: number) => {
+      if (connectionStatus !== "connected") {
+        setShowConnectMessage(true);
+        setPendingPixelClick(index);
+        return;
+      }
+
       const currentColor = pixels[index];
       setSelectedPixel(index);
       if (currentColor === "#333") {
@@ -178,7 +188,7 @@ export const TokenDapp: FC<{
         setModalVisible(true);
       }
     },
-    [pixels]
+    [pixels, connectionStatus]
   );
 
   const handleColorClick = useCallback(
@@ -274,11 +284,40 @@ export const TokenDapp: FC<{
     [pixels, handlePixelClick]
   );
 
+  useEffect(() => {
+    if (connectionStatus === "connected") {
+      setShowConnectMessage(false);
+    }
+  }, [connectionStatus]);
+
+  useEffect(() => {
+    if (connectionStatus === "connected" && pendingPixelClick !== null) {
+      const currentColor = pixels[pendingPixelClick];
+      setSelectedPixel(pendingPixelClick);
+      if (currentColor === "#333") {
+        setIsResetModal(false);
+        setModalVisible(true);
+      } else {
+        setIsResetModal(true);
+        setModalVisible(true);
+      }
+      setPendingPixelClick(null);
+      setShowConnectMessage(false);
+    }
+  }, [connectionStatus, pendingPixelClick, pixels]);
+
   return (
     <>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-      {loading && <p style={{ color: "whitesmoke" }}>Loading the grid</p>}
+      {loading && (
+        <div className={styles.loadingContainer}>
+          <div className={styles.loadingSpinner} />
+          <p className={styles.loadingText}>
+            Loading the pixel grid...
+          </p>
+        </div>
+      )}
       {contractState !== null && (
         <div className={styles.statsContainer}>
           <div className={styles.statBox}>
@@ -427,6 +466,24 @@ export const TokenDapp: FC<{
             }}>
               Get Tokens
             </button>
+          </div>
+        </div>
+      )}
+
+      {showConnectMessage && connectionStatus !== "connected" && (
+        <div className={gridStyles.modal}>
+          <div className={gridStyles.modalContent}>
+            <span 
+              className={gridStyles.close} 
+              onClick={() => setShowConnectMessage(false)}
+            >
+              &times;
+            </span>
+            <h2>Connect Your Wallet</h2>
+            <p>Please connect your wallet to interact with the pixel grid.</p>
+            <div className={gridStyles.connectButtonWrapper}>
+              <AlephiumConnectButton />
+            </div>
           </div>
         </div>
       )}

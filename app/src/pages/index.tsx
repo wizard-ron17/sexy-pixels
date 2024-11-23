@@ -27,9 +27,9 @@ export default function Home() {
             <AlephiumConnectButton />
           </nav>
         </header>
-        {connectionStatus === 'connected' && (
+        
           <TokenDapp config={tokenFaucetConfig} />
-        )}
+        
    </div>
     </>
   )
