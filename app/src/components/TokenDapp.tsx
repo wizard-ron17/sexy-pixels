@@ -420,7 +420,9 @@ export const TokenDapp: FC<{
               : '0'
             }</p>
             <button onClick={() => {
-              window.open(`https://www.elexium.finance/swap?tokenA=tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq&tokenB=${addressFromTokenId(contractState?.fields.tokenIdToBurn)}`, '_blank');
+              if (contractState?.fields.tokenIdToBurn) {
+                window.open(`https://www.elexium.finance/swap?tokenA=tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq&tokenB=${addressFromTokenId(contractState.fields.tokenIdToBurn)}`, '_blank');
+              }
               setInsufficientTokens(false);
             }}>
               Get Tokens
