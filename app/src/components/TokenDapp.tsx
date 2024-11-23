@@ -3,7 +3,7 @@ import { FC, useState } from "react";
 import gridStyles from "../styles/App.module.css";
 import { TxStatus } from "./TxStatus";
 import { useBalance, useConnect, useWallet } from "@alephium/web3-react";
-import { hexToString, node, ONE_ALPH } from "@alephium/web3";
+import { addressFromTokenId, hexToString, node, ONE_ALPH } from "@alephium/web3";
 import {
   contractFactory,
   getGridCoordinates,
@@ -87,7 +87,7 @@ export const TokenDapp: FC<{
           }
           return Promise.resolve();
         },
-        errorCallback: (error: any, subscription): Promise<void> => {
+        errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
           console.error("Error received:", error);
           setError(error.message); // Update state with error info
           subscription.unsubscribe();
@@ -120,7 +120,7 @@ export const TokenDapp: FC<{
           }
           return Promise.resolve();
         },
-        errorCallback: (error: any, subscription): Promise<void> => {
+        errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
           console.error("Error received:", error);
           setError(error.message); // Update state with error info
           subscription.unsubscribe();
@@ -428,7 +428,7 @@ export const TokenDapp: FC<{
               : '0'
             }</p>
             <button onClick={() => {
-              window.open('https://www.elexium.finance/swap?tokenA=tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq&tokenB=26ZZNScke9xJyVcZAktVGvwRwRd8ArVtpXK2hqpEK6UsR', '_blank');
+              window.open(`https://www.elexium.finance/swap?tokenA=tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq&tokenB=${addressFromTokenId(contractState?.fields.tokenIdToBurn)}`, '_blank');
               setInsufficientTokens(false);
             }}>
               Get Tokens

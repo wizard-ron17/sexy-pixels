@@ -59,7 +59,7 @@ export const ActivityEvents = ({ }) => {
           
           return Promise.resolve();
         },
-        errorCallback: (error: any, subscription): Promise<void> => {
+        errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
           console.error("Error received:", error);
           setError(error.message);
           subscription.unsubscribe();
