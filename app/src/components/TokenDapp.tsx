@@ -24,7 +24,7 @@ const colors = [
   "#00FF88",
   "#8800FF",
   "#FF0088",
-  "#888800",
+  "#bf0404",
   "#008888",
 ];
 
@@ -46,6 +46,7 @@ export const TokenDapp: FC<{
   const [eventData, setEventData] = useState<PixelFactoryTypes.PixelSetEvent | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [tokenMetadata, setTokenMetadata] = useState<Token | undefined>()
+  const [isResetModal, setIsResetModal] = useState(false);
 
   const txStatusCallback = useCallback(
     async (status: node.TxStatus, numberOfChecks: number): Promise<unknown> => {
@@ -118,8 +119,13 @@ useEffect(() => {
   const handlePixelClick = useCallback(
 
     (index: number) => {
-      if (pixels[index] === "#333") {
-        setSelectedPixel(index);
+      const currentColor = pixels[index];
+      setSelectedPixel(index);
+      if (currentColor === "#333") {
+        setIsResetModal(false);
+        setModalVisible(true);
+      } else {
+        setIsResetModal(true);
         setModalVisible(true);
       }
     },
@@ -158,6 +164,27 @@ useEffect(() => {
       setSelectedPixel(null);
     }
   }, [selectedPixel, selectedColor]);
+
+  const handleResetSubmit = async () => {
+    if (!selectedPixel) return;
+    const [x, y] = getGridCoordinates(selectedPixel);
+    
+    try {
+      const result = await resetPx(
+        signerProvider,
+        contractState.fields.tokenIdToBurn,
+        x,
+        y,
+        selectedColor || "#333",
+        contractState.fields.burnMint
+      );
+      console.log(`Reset transaction submitted: ${result.txId}`);
+      closeModal();
+      // ... rest of your transaction handling
+    } catch (error) {
+      console.error('Error resetting pixel:', error);
+    }
+  };
 
   const closeModal = useCallback(() => {
     setModalVisible(false);
@@ -200,7 +227,12 @@ useEffect(() => {
           <div className={styles.statBox}>
             <div className={styles.statLabel}>Tokens Burned</div>
             <div className={styles.statValue}>
-              {tokenMetadata !== undefined ? `${Number(contractState.fields.balanceBurn) / 10**tokenMetadata?.decimals} ${tokenMetadata.symbol}` : 0} 
+              {tokenMetadata !== undefined ? (
+                <>
+                  {Number(contractState.fields.balanceBurn) / 10**tokenMetadata?.decimals} {tokenMetadata.symbol}
+                  <img src="https://i.gifer.com/origin/a9/a95ef9bce2a1d53accc6a8018df04ff6_w200.gif" alt="fire" className={styles.fireIcon} />
+                </>
+              ) : 0}
             </div>
           </div>
         </div>
@@ -211,23 +243,22 @@ useEffect(() => {
             <div id={gridStyles.grid}>{memoizedPixels}</div>
           </div>
         </main>
-        {modalVisible && (
+        {modalVisible && !isResetModal && (
           <div className={gridStyles.modal}>
             <div className={gridStyles.modalContent}>
               <span className={gridStyles.close} onClick={closeModal}>
                 &times;
               </span>
               <h2>
-                Select a color for pixel at {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${selectedPixel &&getGridCoordinates(selectedPixel)[1]}`}{" "}
-                - Cost: 0.1 ALPH {contractState !== null && tokenMetadata !== undefined ? `${(Number(contractState.fields.burnMint)/10**tokenMetadata.decimals)} ${tokenMetadata?.symbol}` : '0'}
+                Select a color for pixel at {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${selectedPixel && getGridCoordinates(selectedPixel)[1]}`}
               </h2>
+              <p>Contract Fee: 0.1 ALPH</p>
+              <p>You will burn: {contractState !== null && tokenMetadata !== undefined ? `${(Number(contractState.fields.burnMint)/10**tokenMetadata.decimals)} ${tokenMetadata?.symbol}` : '0'}</p>
               <div id="colorOptions">
                 {colors.map((color) => (
                   <div
                     key={color}
-                    className={`${gridStyles.colorOption} ${
-                      selectedColor === color ? "selected" : ""
-                    }`}
+                    className={`${gridStyles.colorOption} ${selectedColor === color ? gridStyles.selected : ''}`}
                     style={{ backgroundColor: color }}
                     onClick={() => handleColorClick(color)}
                   />
@@ -235,6 +266,23 @@ useEffect(() => {
               </div>
               <button id="submitColor" onClick={handleColorSubmit}>
                 Submit
+              </button>
+            </div>
+          </div>
+        )}
+
+        {modalVisible && isResetModal && (
+          <div className={gridStyles.modal}>
+            <div className={gridStyles.modalContent}>
+              <span className={gridStyles.close} onClick={closeModal}>
+                &times;
+              </span>
+              <h2>
+                Reset pixel at {`${selectedPixel && getGridCoordinates(selectedPixel)[0]}, ${selectedPixel && getGridCoordinates(selectedPixel)[1]}`}
+              </h2>
+              <p>You will reset this pixel to its default state</p>
+              <button id="resetColor" onClick={handleResetSubmit}>
+                Reset Pixel
               </button>
             </div>
           </div>

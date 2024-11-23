@@ -22,8 +22,8 @@ export default function Home() {
         <header>
           <h1>$EXY PIXELS</h1>
           <nav>
-            <span className="nav-text" onClick={() => alert('Docs')}>Docs</span>
-            <span className="nav-text" onClick={() => alert('Activity')}>Activity</span>
+            <span className="nav-text" onClick={() => window.location.href = '/docs'}>Docs</span>
+            <span className="nav-text" onClick={() => window.location.href = '/activity'}>Activity</span>
             <AlephiumConnectButton />
           </nav>
         </header>

@@ -350,13 +350,12 @@ a em,
 a i,
 a strong,
 button {
-  border-radius: var(--border-radius);
+  border-radius: 10px;
   display: inline-block;
   font-size: medium;
   font-weight: bold;
   line-height: var(--line-height);
-  margin: 0.5rem 0;
-  padding: 1rem 2rem;
+  padding: 10px 20px;
 }
 
 button.flat {
@@ -390,8 +389,8 @@ button:hover {
 a b,
 a strong,
 button {
-  background-color: var(--color-link);
-  border: 2px solid var(--color-link);
+  background-color: rgb(178, 0, 0);
+  border: none;
   color: white;
 }
 
@@ -559,9 +558,8 @@ blockquote footer {
 }
 
 #submitColor {
-   margin-top: 20px;
    padding: 10px 20px;
-   background-color: #f9256b;
+   background-color: #009f35;
    border: none;
    border-radius: 10px;
    color: #fff;
@@ -569,7 +567,7 @@ blockquote footer {
  }
  
  #submitColor:hover {
-   background-color: #d70d51;
+   background-color: #009f35;
  }
 
 /* Add mobile styles */

@@ -26,3 +26,12 @@
   font-weight: bold;
   color: #fff;
 } 
+
+.fireIcon {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  margin-left: 5px;
+  margin-bottom: 5px;
+  display: inline-block;
+}
