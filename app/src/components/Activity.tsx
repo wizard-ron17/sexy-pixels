@@ -15,9 +15,9 @@ export const ActivityEvents = ({ }) => {
   const [events, setEvents] = useState<(PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent)[]>([]);
   const [callerCounts, setCallerCounts] = useState<CallerCount[]>([]);
 
-  const updateCallerCounts = (caller: string, blockHash: string) => {
+  const updateCallerCounts = (caller: string, txId: string) => {
     setCallerCounts(prevCounts => {
-      const existingEvent = events.some(e => e.blockHash === blockHash);
+      const existingEvent = events.some(e => e.txId === txId);
       if (existingEvent) {
         return prevCounts;
       }
@@ -87,6 +87,7 @@ export const ActivityEvents = ({ }) => {
         </div>
       </div>
 
+      
       <div className="activity-list">
         {error && <div className="error">{error}</div>}
         <h3>Recent Activity</h3>

@@ -3,6 +3,8 @@ import Head from 'next/head'
 import { AlephiumConnectButton } from '@alephium/web3-react'
 import gridStyles from "../styles/App.module.css"
 import { ActivityEvents } from '@/components/Activity'
+import styles from '../styles/Activity.module.css';
+
 
 export default function Activity() {
   return (
@@ -23,7 +25,14 @@ export default function Activity() {
           </nav>
         </header>
         <main>
-          <h2>Activity Feed</h2>
+
+      <div className={styles.titleContainer}>
+        <h2 className={styles.leaderboardTitle}>Activity Feed</h2>
+        <div className={styles.liveIndicator}>
+          <div className={styles.pulse}></div>
+          <span>LIVE</span>
+        </div>
+      </div>
           <ActivityEvents/>
         </main>
       </div>
