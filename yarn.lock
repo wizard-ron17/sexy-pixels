@@ -26,13 +26,6 @@
     "@alephium/web3" "^1.8.5"
     bowser "^2.11.0"
 
-"@alephium/token-list@^0.0.20":
-  version "0.0.20"
-  resolved "https://registry.yarnpkg.com/@alephium/token-list/-/token-list-0.0.20.tgz#9e5e6c6bc4650ff2fb5fb4b5cef213452d9414c4"
-  integrity sha512-0JoFLsdxqp2M0k0ohsCe0F+tdMEJ1LjJQrNm4s+3c8CY2dDnTNbH1zxPPQ9xF2HbTUHbhAN9VCMB1SmWRuMm7g==
-  dependencies:
-    cross-fetch "^3.1.8"
-
 "@alephium/walletconnect-provider@^1.8.5":
   version "1.8.5"
   resolved "https://registry.npmjs.org/@alephium/walletconnect-provider/-/walletconnect-provider-1.8.5.tgz"
@@ -2679,7 +2672,7 @@ create-require@^1.1.0:
   resolved "https://registry.npmjs.org/create-require/-/create-require-1.1.1.tgz"
   integrity sha512-dcKFX3jn0MpIaXjisoRvexIJVEKzaq7z2rZKxf+MSr9TkdmHmsU4m2lcLojrj/FHl8mk5VxMmYA+ftRkP/3oKQ==
 
-cross-fetch@^3.1.5, cross-fetch@^3.1.8:
+cross-fetch@^3.1.5:
   version "3.1.8"
   resolved "https://registry.npmjs.org/cross-fetch/-/cross-fetch-3.1.8.tgz"
   integrity sha512-cvA+JwZoU0Xq+h6WkMvAUqPEYy92Obet6UdKLfW60qn99ftItKjB5T+BkyWOFWe2pUyfQ+IJHmpOTznqk1M6Kg==
