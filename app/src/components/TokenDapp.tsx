@@ -38,6 +38,11 @@ const colors = [
   "#008888",
 ];
 
+// Add new type to handle both event types
+type PixelEvent = 
+  | (PixelFactoryTypes.PixelSetEvent & { type: 'set' })
+  | (PixelFactoryTypes.PixelResetEvent & { type: 'reset' });
+
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
@@ -57,39 +62,25 @@ export const TokenDapp: FC<{
   const [isResetModal, setIsResetModal] = useState(false);
   const [tokenBalance, setTokenBalance] = useState<number | undefined>(0);
   const [insufficientTokens, setInsufficientTokens] = useState(false);
+  const [eventCounter, setEventCounter] = useState(0)
+  const [contractEventsCount, setContractEventsCount] = useState(0)
+  const [eventsReceived, setEventsReceived] = useState<PixelEvent[]>([])
 
   useEffect(() => {
     async function subscribeEvent() {
-      const px = contractFactory.maps.pixels;
+      const currentCount = await contractFactory.getContractEventsCurrentCount()
+      setContractEventsCount(currentCount)
 
       contractFactory.subscribePixelSetEvent({
         pollingInterval: 1000,
-        messageCallback: async (
-          event: PixelFactoryTypes.PixelSetEvent
-        ): Promise<void> => {
-          console.log("got new event:", event);
-
-          const indexNewPx = getIndexFromCoordinates(
-            Number(event.fields.x),
-            Number(event.fields.y)
-          );
-          if (
-            await px.contains(
-              cartesianToByteVec(Number(event.fields.x), Number(event.fields.y))
-            )
-          ) {
-            setPixels((prevPixels) => {
-              const newPixels = [...prevPixels];
-              newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`;
-
-              return newPixels;
-            });
-          }
+        messageCallback: async (event: PixelFactoryTypes.PixelSetEvent): Promise<void> => {
+          setEventCounter(prev => prev + 1);
+          setEventsReceived(prev => [...prev, { ...event, type: 'set' }]);
           return Promise.resolve();
         },
         errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
           console.error("Error received:", error);
-          setError(error.message); // Update state with error info
+          setError(error.message);
           subscription.unsubscribe();
           return Promise.resolve();
         },
@@ -97,48 +88,54 @@ export const TokenDapp: FC<{
 
       contractFactory.subscribePixelResetEvent({
         pollingInterval: 1000,
-        messageCallback: async (
-          event: PixelFactoryTypes.PixelResetEvent
-        ): Promise<void> => {
-          console.log("got reset updated event:", event);
-
-          const indexNewPx = getIndexFromCoordinates(
-            Number(event.fields.x),
-            Number(event.fields.y)
-          );
-          if (
-            !(await px.contains(
-              cartesianToByteVec(Number(event.fields.x), Number(event.fields.y))
-            ))
-          ) {
-            setPixels((prevPixels) => {
-              const newPixels = [...prevPixels];
-              newPixels[indexNewPx] = `#333`;
-
-              return newPixels;
-            });
-          }
+        messageCallback: async (event: PixelFactoryTypes.PixelResetEvent): Promise<void> => {
+          setEventCounter(prev => prev + 1);
+          setEventsReceived(prev => [...prev, { ...event, type: 'reset' }]);
           return Promise.resolve();
         },
         errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
           console.error("Error received:", error);
-          setError(error.message); // Update state with error info
+          setError(error.message);
           subscription.unsubscribe();
           return Promise.resolve();
         },
       });
     }
-
     subscribeEvent();
-
-    // Cleanup if needed
-    return () => {
-      // Add code to unsubscribe from events if the library supports it
-    };
   }, []);
 
+  useEffect(() => {
+    if (eventCounter >= contractEventsCount && contractEventsCount > 0) {
+      // Create a new array once
+      const newPixels = Array(gridSize * gridSize).fill("#333");
+      
+      // Process 'set' events first
+      eventsReceived
+        .filter(event => event.type === 'set')
+        .forEach(event => {
+          const indexNewPx = getIndexFromCoordinates(
+            Number(event.fields.x),
+            Number(event.fields.y)
+          );
+          newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`;
+        });
 
+      // Then process 'reset' events
+      eventsReceived
+        .filter(event => event.type === 'reset')
+        .forEach(event => {
+          const indexNewPx = getIndexFromCoordinates(
+            Number(event.fields.x),
+            Number(event.fields.y)
+          );
+          newPixels[indexNewPx] = '#333'; // Reset color
+        });
 
+      // Only update the state once with the final result
+      setPixels(newPixels);
+      setLoading(false);
+    }
+  }, [eventCounter, contractEventsCount, eventsReceived]);
 
   useEffect(() => {
     if(connectionStatus === "connected" && contractState !== null){
@@ -163,11 +160,7 @@ export const TokenDapp: FC<{
           (token) => token.id === contractState.fields.tokenIdToBurn
         )
       );
-      console.log(contractState.fields.tokenIdToBurn);
-      // const initialPixels = await getPx();
 
-      // console.log(initialPixels)
-      // setPixels(initialPixels);
       setLoading(false); // Stop loading once initialized
     };
 
@@ -196,7 +189,6 @@ export const TokenDapp: FC<{
   );
 
   const handleColorSubmit = useCallback(async () => {
-    console.log("requiredAmount", tokenBalance);
 
     if (selectedPixel !== null && selectedColor) {
       // Check if user has enough tokens
