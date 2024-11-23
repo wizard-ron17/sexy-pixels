@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo } from "react";
 import { FC, useState } from "react";
 import gridStyles from "../styles/App.module.css";
 import { TxStatus } from "./TxStatus";
-import { useWallet } from "@alephium/web3-react";
+import { useBalance, useConnect, useWallet } from "@alephium/web3-react";
 import { hexToString, node, ONE_ALPH } from "@alephium/web3";
 import {
   contractFactory,
@@ -41,15 +41,13 @@ const colors = [
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
-  const { signer, account } = useWallet();
-  const addressGroup = config.groupIndex;
-  const [withdrawAmount, setWithdrawAmount] = useState("");
+  const { signer, account, connectionStatus } = useWallet();
+  const {balance, updateBalanceForTx} = useBalance();
   const [ongoingTxId, setOngoingTxId] = useState<string>();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedPixel, setSelectedPixel] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
-  const [contractState, setContractState] =
-    useState<PixelFactoryTypes.State | null>(null);
+  const [contractState, setContractState] =useState<PixelFactoryTypes.State | null>(null);
   const [pixels, setPixels] = useState(Array(gridSize * gridSize).fill("#333"));
   const [loading, setLoading] = useState(true); // Loading state
   const [eventData, setEventData] =
@@ -57,20 +55,8 @@ export const TokenDapp: FC<{
   const [error, setError] = useState<string | null>(null);
   const [tokenMetadata, setTokenMetadata] = useState<Token | undefined>();
   const [isResetModal, setIsResetModal] = useState(false);
-
-  const txStatusCallback = useCallback(
-    async (status: node.TxStatus, numberOfChecks: number): Promise<unknown> => {
-      if (
-        (status.type === "Confirmed" && numberOfChecks > 2) ||
-        (status.type === "TxNotFound" && numberOfChecks > 3)
-      ) {
-        setOngoingTxId(undefined);
-      }
-
-      return Promise.resolve();
-    },
-    [setOngoingTxId]
-  );
+  const [tokenBalance, setTokenBalance] = useState<number | undefined>(0);
+  const [insufficientTokens, setInsufficientTokens] = useState(false);
 
   useEffect(() => {
     async function subscribeEvent() {
@@ -151,6 +137,21 @@ export const TokenDapp: FC<{
     };
   }, []);
 
+
+
+
+  useEffect(() => {
+    if(connectionStatus === "connected" && contractState !== null){
+      const tokenBalanceWallet = balance.tokenBalances?.find(
+        (token: { id: string; }) => token.id === contractState.fields.tokenIdToBurn
+      )
+      
+      setTokenBalance(tokenBalanceWallet?.amount)
+      if(tokenBalanceWallet == undefined) setTokenBalance(0);
+
+    }
+  }, [balance, connectionStatus,contractState]);
+
   useEffect(() => {
     const initializePixels = async () => {
       const contractState = await contractFactory.fetchState();
@@ -195,7 +196,18 @@ export const TokenDapp: FC<{
   );
 
   const handleColorSubmit = useCallback(async () => {
+    console.log("requiredAmount", tokenBalance);
+
     if (selectedPixel !== null && selectedColor) {
+      // Check if user has enough tokens
+      if (contractState && tokenBalance !== undefined && tokenMetadata) {
+        const requiredAmount = Number(contractState.fields.burnMint);
+        if (tokenBalance < requiredAmount) {
+          setInsufficientTokens(true);
+          return;
+        }
+      }
+
       setPixels((prevPixels) => {
         const newPixels = [...prevPixels];
         newPixels[selectedPixel] = selectedColor;
@@ -215,17 +227,16 @@ export const TokenDapp: FC<{
           contractState.fields.burnMint
         );
 
+        updateBalanceForTx(result.txId);
         setOngoingTxId(result.txId);
       }
       setModalVisible(false);
-      setSelectedColor(null);
+      //setSelectedColor(null);
       setSelectedPixel(null);
     }
-  }, [selectedPixel, selectedColor]);
+  }, [selectedPixel, selectedColor, contractState, tokenBalance, tokenMetadata]);
 
   const handleResetSubmit = async () => {
-    console.log("resetting pixel");
-    console.log("resetting pixel at", selectedPixel);
 
     if (selectedPixel != 0 && !selectedPixel) return;
     const [x, y] = getGridCoordinates(selectedPixel);
@@ -239,6 +250,8 @@ export const TokenDapp: FC<{
       if (signer && contractState !== null) {
         const result = await resetPx(signer, x, y);
         console.log(`Reset transaction submitted: ${result.txId}`);
+        updateBalanceForTx(result.txId);
+
         closeModal();
       }
       // ... rest of your transaction handling
@@ -268,7 +281,7 @@ export const TokenDapp: FC<{
       )),
     [pixels, handlePixelClick]
   );
-  console.log("ongoing..", ongoingTxId);
+
   return (
     <>
       {error && <p style={{ color: "red" }}>Error: {error}</p>}
@@ -390,8 +403,35 @@ export const TokenDapp: FC<{
               Reset Pixel
             </button>
             &nbsp;
-            <button id="submitColor" onClick={handleColorSubmit}>
-              Recolor Pixel
+            <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
+            {selectedColor ? 'Recolor' : 'Choose a color'}
+            
+            </button>
+          </div>
+        </div>
+      )}
+
+      {insufficientTokens && (
+        <div className={gridStyles.modal}>
+          <div className={gridStyles.modalContent}>
+            <span className={gridStyles.close} onClick={() => setInsufficientTokens(false)}>
+              &times;
+            </span>
+            <h2>Insufficient Tokens</h2>
+            <p>You don't have enough tokens to perform this action.</p>
+            <p>Required: {contractState && tokenMetadata ? 
+              `${Number(contractState.fields.burnMint) / 10 ** tokenMetadata.decimals} ${tokenMetadata.symbol}` 
+              : '0'
+            }</p>
+            <p>Your balance: {tokenBalance && tokenMetadata ? 
+              `${tokenBalance / 10 ** tokenMetadata.decimals} ${tokenMetadata.symbol}` 
+              : '0'
+            }</p>
+            <button onClick={() => {
+              window.open('https://www.elexium.finance/swap?tokenA=tgx7VNFoP9DJiFMFgXXtafQZkUvyEdDHT9ryamHJYrjq&tokenB=26ZZNScke9xJyVcZAktVGvwRwRd8ArVtpXK2hqpEK6UsR', '_blank');
+              setInsufficientTokens(false);
+            }}>
+              Get Tokens
             </button>
           </div>
         </div>
