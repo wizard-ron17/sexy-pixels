@@ -14,6 +14,7 @@ export const ActivityEvents = ({ }) => {
   const [error, setError] = useState<string | null>(null);
   const [events, setEvents] = useState<(PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent)[]>([]);
   const [callerCounts, setCallerCounts] = useState<CallerCount[]>([]);
+  const [isMobile, setIsMobile] = useState(false);
 
   const updateCallerCounts = (caller: string, txId: string) => {
     setCallerCounts(prevCounts => {
@@ -70,6 +71,22 @@ export const ActivityEvents = ({ }) => {
     subscribeEvent();
   }, []);
 
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth <= 768);
+    };
+    
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const formatAddress = (address: string, isMobile: boolean) => {
+    return isMobile ? 
+      `${address.slice(0, 6)}...${address.slice(-4)}` : 
+      address;
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.leaderboard}>
@@ -79,7 +96,7 @@ export const ActivityEvents = ({ }) => {
             <div key={caller.address} className={styles.leaderboardItem}>
               <span className={styles.rank}>#{index + 1}</span>
               <span className={styles.address}>
-                {caller.address.slice(0, 6)}...{caller.address.slice(-4)}
+                {formatAddress(caller.address, isMobile)}
               </span>
               <span className={styles.count}>{caller.count} mints</span>
             </div>
@@ -88,19 +105,51 @@ export const ActivityEvents = ({ }) => {
       </div>
 
       
-      <div className="activity-list">
+      <div className={styles.activityList}>
         {error && <div className="error">{error}</div>}
         <h3>Recent Activity</h3>
-        <ul>
-          {events.map((event, index) => (
-            <li key={index}>
-              {event.name === 'PixelSet' 
-                ? `Pixel Set Block:  ${event.blockHash} / caller: ${(event.fields as {caller: Address}).caller} / color: #${hexToString((event.fields as {color: string}).color)} / x: ${Number(event.fields.x)} y: ${Number(event.fields.y)}`
-                : `Pixel Reset Block: ${event.blockHash} / caller: ${(event.fields as {caller: Address}).caller} / minter of the pixel: ${(event.fields as {firstMinter: Address}).firstMinter} / x: ${Number(event.fields.x)} y: ${Number(event.fields.y)}`
-              }
-            </li>
+        <div className={styles.activityCards}>
+          {events.slice().reverse().map((event, index) => (
+            <div key={index} className={styles.activityCard}>
+              <div className={styles.activityHeader}>
+                <span className={styles.eventType}>
+                  {event.name === 'PixelSet' ? '🎨 Pixel Set' : '🔄 Pixel Reset'}
+                </span>
+                <span className={styles.timestamp}>
+                  Block: {isMobile ? 
+                    `${event.blockHash.slice(0, 8)}...` : 
+                    event.blockHash}
+                </span>
+              </div>
+              <div className={styles.activityDetails}>
+                <div className={styles.addressRow}>
+                  <span className={styles.label}>Caller:</span>
+                  <span className={styles.address}>
+                    {formatAddress((event.fields as {caller: Address}).caller, isMobile)}
+                  </span>
+                </div>
+                {event.name === 'PixelSet' ? (
+                  <div className={styles.colorRow}>
+                    <span className={styles.label}>Color:</span>
+                    <span className={styles.colorBox} style={{backgroundColor: `#${hexToString((event.fields as {color: string}).color)}`}}></span>
+                    <span>#{hexToString((event.fields as {color: string}).color)}</span>
+                  </div>
+                ) : (
+                  <div className={styles.addressRow}>
+                    <span className={styles.label}>Original Minter:</span>
+                    <span className={styles.address}>
+                      {formatAddress((event.fields as {firstMinter: Address}).firstMinter, isMobile)}
+                    </span>
+                  </div>
+                )}
+                <div className={styles.coordRow}>
+                  <span className={styles.label}>Coordinates:</span>
+                  <span>x: {Number(event.fields.x)}, y: {Number(event.fields.y)}</span>
+                </div>
+              </div>
+            </div>
           ))}
-        </ul>
+        </div>
       </div>
     </div>
   );

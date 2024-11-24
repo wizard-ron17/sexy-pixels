@@ -23,13 +23,12 @@ export default function Docs() {
           </nav>
         </header>
         <main>
-          <h2>Documentation</h2>
           
           <section className={styles.docsSection}>
             <h3 className={styles.sectionHeading}>Inspiration</h3>
             <div className={styles.docsContent}>
               <p>
-                The $EXY PIXELS project draws inspiration from the iconic r/place experiment, 
+                The $EXY PIXELS project draws inspiration from the iconic <a href="https://en.wikipedia.org/wiki/R/place" target="_blank" rel="noopener noreferrer">r/place experiment</a>, 
                 where communities collaborated pixel by pixel to create art. 
                 We wanted to recreate this concept using the security and scalability of Ralph
                 and the Alephium Blockchain.
@@ -52,12 +51,24 @@ export default function Docs() {
           </section>
 
           <section className={styles.docsSection}>
-            <h3 className={styles.sectionHeading}>Resetting</h3>
+            <h3 className={styles.sectionHeading}>Resetting & Recoloring</h3>
             <div className={styles.docsContent}>
               <p>
-                Pixels can also be reset to their default uncolored state. 
-                Resetting a pixel will return the 0.1 $ALPH contract creation fee to the original minter. 
+                Pixels can also be reset to their default uncolored state, or recolored to a new color. To do so,
+                just click a pixel that's already been colored, and choose to either reset or recolor.
+                Resetting or recoloring a pixel will return the 0.1 $ALPH contract creation fee to the original minter. 
                 Once a pixel is reset, it can then be colored again using the same mint process as before.
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.docsSection}>
+            <h3 className={styles.sectionHeading}>What's Next?</h3>
+            <div className={styles.docsContent}>
+              <p>
+                We plan on expanding the grid to be larger than 20x20. Additionally, we want to add various mechanics
+                and features to gamify the project. Giving the user the ability to create their own custom grids that 
+                burn whatever token they want is also on the agenda for V2.
               </p>
             </div>
           </section>

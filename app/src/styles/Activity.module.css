@@ -1,14 +1,15 @@
 .container {
   width: 100%;
-  max-width: 800px;
+  max-width: 1200px;
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .leaderboard {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 16px;
-  margin-bottom: 24px;
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
   width: 100%;
 }
 
@@ -27,10 +28,10 @@
 .leaderboardItem {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 12px;
+  gap: 24px;
+  padding: 16px 24px;
   background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  border-radius: 8px;
   transition: background 0.2s ease;
 }
 
@@ -40,13 +41,16 @@
 
 .rank {
   font-weight: bold;
-  min-width: 30px;
+  min-width: 40px;
   color: #fff;
+  font-size: 1.1rem;
 }
 
 .address {
   font-family: monospace;
   color: #fff;
+  font-size: 1.1rem;
+  flex: 1;
 }
 
 .count {
@@ -92,5 +96,129 @@
   100% {
     transform: scale(0.95);
     box-shadow: 0 0 0 0 rgba(255, 0, 0, 0);
+  }
+}
+
+.activityList {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.activityCards {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-top: 16px;
+}
+
+.activityCard {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s ease;
+}
+
+.activityCard:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.activityHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.eventType {
+  font-weight: bold;
+  color: #00ff00;
+}
+
+.timestamp {
+  color: #888;
+  font-size: 0.9rem;
+}
+
+.activityDetails {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.addressRow, .colorRow, .coordRow {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.label {
+  color: #888;
+  min-width: 120px;
+}
+
+.address {
+  font-family: monospace;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}
+
+.colorBox {
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Mobile-first styles */
+@media (max-width: 768px) {
+  .container {
+    max-width: 100%;
+    padding: 0 12px;
+  }
+
+  .leaderboard {
+    padding: 16px;
+  }
+
+  .leaderboardItem {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .address {
+    font-size: 0.9rem;
+    /* Truncate address on mobile */
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .activityCard {
+    padding: 16px;
+  }
+
+  .label {
+    min-width: 80px;
+    font-size: 0.9rem;
+  }
+
+  .activityHeader {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .timestamp {
+    font-size: 0.8rem;
+  }
+
+  /* Truncate long text on mobile */
+  .addressRow .address {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 } 
