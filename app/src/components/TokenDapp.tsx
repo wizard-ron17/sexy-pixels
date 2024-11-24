@@ -38,13 +38,6 @@ const colors = [
   "#008888",
 ];
 
-// Add new type to handle both event types
-type PixelEvent = 
-  | (PixelFactoryTypes.PixelSetEvent & { type: 'set' })
-  | (PixelFactoryTypes.PixelResetEvent & { type: 'reset' });
-
-
-
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
@@ -66,7 +59,7 @@ export const TokenDapp: FC<{
   const [insufficientTokens, setInsufficientTokens] = useState(false);
   const [eventCounter, setEventCounter] = useState(0)
   const [contractEventsCount, setContractEventsCount] = useState(0)
-  const [eventsReceived, setEventsReceived] = useState<PixelEvent[]>([])
+  const [eventsReceived, setEventsReceived] = useState<(PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent)[]>([])
   const [showConnectMessage, setShowConnectMessage] = useState(false);
   const [pendingPixelClick, setPendingPixelClick] = useState<number | null>(null);
 
@@ -75,26 +68,12 @@ export const TokenDapp: FC<{
       const currentCount = await contractFactory.getContractEventsCurrentCount()
       setContractEventsCount(currentCount)
 
-      contractFactory.subscribePixelSetEvent({
+      contractFactory.subscribeAllEvents({
         pollingInterval: 1000,
-        messageCallback: async (event: PixelFactoryTypes.PixelSetEvent): Promise<void> => {
+        messageCallback: async (event: PixelFactoryTypes.PixelSetEvent
+          | PixelFactoryTypes.PixelResetEvent): Promise<void> => {
           setEventCounter(prev => prev + 1);
-          setEventsReceived(prev => [...prev, { ...event, type: 'set' }]);
-          return Promise.resolve();
-        },
-        errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
-          console.error("Error received:", error);
-          setError(error.message);
-          subscription.unsubscribe();
-          return Promise.resolve();
-        },
-      });
-
-      contractFactory.subscribePixelResetEvent({
-        pollingInterval: 1000,
-        messageCallback: async (event: PixelFactoryTypes.PixelResetEvent): Promise<void> => {
-          setEventCounter(prev => prev + 1);
-          setEventsReceived(prev => [...prev, { ...event, type: 'reset' }]);
+          setEventsReceived(prev => [...prev, event]);
           return Promise.resolve();
         },
         errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
@@ -110,32 +89,21 @@ export const TokenDapp: FC<{
 
   useEffect(() => {
     if (eventCounter >= contractEventsCount && contractEventsCount > 0) {
-      // Create a new array once
       const newPixels = Array(gridSize * gridSize).fill("#333");
       
-      // Process 'set' events first
-      eventsReceived
-        .filter(event => event.type === 'set')
-        .forEach(event => {
-          const indexNewPx = getIndexFromCoordinates(
-            Number(event.fields.x),
-            Number(event.fields.y)
-          );
+      eventsReceived.forEach(event => {
+        const indexNewPx = getIndexFromCoordinates(
+          Number(event.fields.x),
+          Number(event.fields.y)
+        );
+        
+        if (event.name === 'PixelSet' && 'color' in event.fields) {
           newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`;
-        });
+        } else if (event.name === 'PixelReset') {
+          newPixels[indexNewPx] = '#333';
+        }
+      });
 
-      // Then process 'reset' events
-      eventsReceived
-        .filter(event => event.type === 'reset')
-        .forEach(event => {
-          const indexNewPx = getIndexFromCoordinates(
-            Number(event.fields.x),
-            Number(event.fields.y)
-          );
-          newPixels[indexNewPx] = '#333'; // Reset color
-        });
-
-      // Only update the state once with the final result
       setPixels(newPixels);
       setLoading(false);
     }
