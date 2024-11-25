@@ -9,13 +9,16 @@
  }
 
  #gridContainer {
-   border: 2px solid;
-   border-image: linear-gradient(45deg, #ff4081, #33ff57, #3357ff, #ffff33, #ff33ff, #33ffff, #ff4081) 3;
-   border-radius: 10px;
+   background: 
+     linear-gradient(#000, #000) padding-box,
+     linear-gradient(45deg, #ff4081, #33ff57, #3357ff, #ffff33, #ff33ff, #33ffff, #ff4081) border-box;
+   border: 2px solid transparent;
+   border-radius: 12px;
    padding: 15px;
    display: inline-block;
    width: fit-content;
    background-color: #000;
+   overflow: hidden;
  }
  
  #grid {
@@ -24,6 +27,7 @@
    grid-template-rows: repeat(20, 25px);
    gap: 1px;
    width: auto;
+   border-radius: 10px;
  }
  
  .pixel {
