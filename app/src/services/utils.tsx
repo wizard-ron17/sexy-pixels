@@ -43,7 +43,7 @@ function getNetwork(): NetworkId {
 export const contractFactory = loadDeployments(getNetwork()).contracts
   .PixelFactory.contractInstance;
 
-export const gridSize = 20;
+export const gridSize = 50;
 
 function getTokenFaucetConfig(): TokenFaucetConfig {
   const network = getNetwork();

@@ -14,8 +14,8 @@ const deployFaucet: DeployFunction<Settings> = async (
      initialFields: {
         maxX: 69n,
         maxY: 69n,
-        burnMint: 690n * 10n**18n,
-        tokenIdToBurn: "b067767804137fa913fe30a26a7c5f397faba36aaa7b9650327ae4e6e9305d00",
+        burnMint: 1n * 10n**18n,
+        tokenIdToBurn: "8e6877d8dee708506625a77d73f62210dce24564cfa9ec93c0df02f2ba519b00",
         numPxMinted: 0n,
         balanceBurn: 0n
      }
