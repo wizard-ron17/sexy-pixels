@@ -11,11 +11,8 @@ interface CallerCount {
   count: number;
 }
 
-interface ActivityEventsProps {
-  wallet: { account: { address: string } };
-}
 
-export const ActivityEvents: React.FC<ActivityEventsProps> = ({ wallet }) => {
+export const ActivityEvents: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [events, setEvents] = useState<(PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent)[]>([]);
   const [callerCounts, setCallerCounts] = useState<CallerCount[]>([]);
@@ -102,12 +99,6 @@ export const ActivityEvents: React.FC<ActivityEventsProps> = ({ wallet }) => {
     window.addEventListener('resize', checkMobile);
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
-
-  useEffect(() => {
-    if (wallet?.account?.address) {
-      fetchAnsProfile(wallet.account.address);
-    }
-  }, [wallet?.account?.address]);
 
   useEffect(() => {
     const uniqueCallers = Array.from(new Set(callerCounts.map(c => c.address)));
