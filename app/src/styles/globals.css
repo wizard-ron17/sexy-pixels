@@ -601,7 +601,7 @@ blockquote footer {
   }
 
   main {
-    margin-top: 50px;
+    margin-top: 10px;
     padding-top: 0;
     height: calc(100vh - 50px);
     overflow-y: auto;
@@ -629,12 +629,12 @@ blockquote footer {
 
 /* Adjust main content to account for fixed header */
 main {
-   margin-top: 50px;
+   margin-top: 10px;
    padding-top: 0;
 }
 
 @media (max-width: 768px) {
   main {
-    margin-top: 40px;
+    margin-top: 10px;
   }
 }
