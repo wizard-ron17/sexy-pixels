@@ -5,6 +5,7 @@ import { TokenDapp } from '@/components/TokenDapp'
 import { AlephiumConnectButton, useWallet } from '@alephium/web3-react'
 import { tokenFaucetConfig } from '@/services/utils'
 import gridStyles from "../styles/App.module.css";
+import Link from 'next/link'
 
 
 export default function Home() {
@@ -22,8 +23,8 @@ export default function Home() {
         <header>
           <h1>$EXY PIXELS</h1>
           <nav>
-            <span className="nav-text" onClick={() => window.location.href = '/docs'}>Docs</span>
-            <span className="nav-text" onClick={() => window.location.href = '/activity'}>Activity</span>
+            <Link href="/docs" className="nav-text">Docs</Link>
+            <Link href="/activity" className="nav-text">Activity</Link>
             <AlephiumConnectButton />
           </nav>
         </header>

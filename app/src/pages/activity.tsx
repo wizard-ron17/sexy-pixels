@@ -4,6 +4,7 @@ import { AlephiumConnectButton } from '@alephium/web3-react'
 import gridStyles from "../styles/App.module.css"
 import { ActivityEvents } from '../components/Activity'
 import styles from '../styles/Activity.module.css';
+import Link from 'next/link'
 
 
 export default function Activity() {
@@ -19,8 +20,8 @@ export default function Activity() {
         <header>
           <h1>$EXY PIXELS</h1>
           <nav>
-            <span className="nav-text" onClick={() => window.location.href = '/'}>Home</span>
-            <span className="nav-text" onClick={() => window.location.href = '/docs'}>Docs</span>
+          <Link href="/" className="nav-text">Home</Link>
+          <Link href="/docs" className="nav-text">Docs</Link>
             <AlephiumConnectButton />
           </nav>
         </header>
