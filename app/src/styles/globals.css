@@ -151,11 +151,17 @@ header {
  header h1 {
    font-size: 1.8em;
    margin: 0;
+   margin-top: 10px;
    font-family: 'Circular', 'Arial', sans-serif;
    color: #ff4081;  /* Pink color */
    background: none;
    -webkit-text-fill-color: initial;
    animation: none;
+   background: linear-gradient(45deg, #ff4081, #33ff57, #3357ff, #ffff33, #ff33ff, #33ffff, #ff4081);
+   background-size: 400% 400%;
+   background-clip: text;
+   -webkit-text-fill-color: transparent;
+   animation: gradientAnimation 15s ease infinite;
  }
 
  @keyframes gradientAnimation {
