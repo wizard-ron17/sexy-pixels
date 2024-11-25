@@ -9,6 +9,7 @@
   align-items: center;
   padding: 6rem;
   min-height: 100vh;
+  z-index: 2;
 }
 
 .description {

@@ -2,7 +2,7 @@ import React from 'react'
 import Head from 'next/head'
 import { AlephiumConnectButton } from '@alephium/web3-react'
 import gridStyles from "../styles/App.module.css"
-import { ActivityEvents } from '@/components/Activity'
+import { ActivityEvents } from '../components/Activity'
 import styles from '../styles/Activity.module.css';
 
 

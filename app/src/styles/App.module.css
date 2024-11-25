@@ -2,7 +2,7 @@
    display: flex;
    flex-direction: column;
    align-items: center;
-   background-color: #121212;
+   background-color: transparent;
    color: #fff;
    min-height: 100vh;
    overflow-x: hidden;
@@ -15,6 +15,7 @@
    padding: 15px;
    display: inline-block;
    width: fit-content;
+   background-color: #000;
  }
  
  #grid {

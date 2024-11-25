@@ -4,17 +4,24 @@ import { PixelFactoryTypes } from "my-contracts";
 import React, { useCallback, useEffect, useMemo } from "react";
 import { useState } from "react";
 import styles from '../styles/Activity.module.css';
+import { ANS } from "@alph-name-service/ans-sdk";
 
 interface CallerCount {
   address: string;
   count: number;
 }
 
-export const ActivityEvents = ({ }) => {
+interface ActivityEventsProps {
+  wallet: { account: { address: string } };
+}
+
+export const ActivityEvents: React.FC<ActivityEventsProps> = ({ wallet }) => {
   const [error, setError] = useState<string | null>(null);
   const [events, setEvents] = useState<(PixelFactoryTypes.PixelSetEvent | PixelFactoryTypes.PixelResetEvent)[]>([]);
   const [callerCounts, setCallerCounts] = useState<CallerCount[]>([]);
   const [isMobile, setIsMobile] = useState(false);
+  const [ansNames, setAnsNames] = useState<{ [key: string]: string }>({});
+  const [ansUris, setAnsUris] = useState<{ [key: string]: string }>({});
 
   const updateCallerCounts = (caller: string, txId: string) => {
     setCallerCounts(prevCounts => {
@@ -33,6 +40,21 @@ export const ActivityEvents = ({ }) => {
           .sort((a, b) => b.count - a.count);
       }
     });
+  };
+
+  const fetchAnsProfile = async (address: string) => {
+    try {
+      const ans = new ANS('mainnet');
+      const profile = await ans.getProfile(address);
+      if (profile?.name) {
+        setAnsNames(prev => ({ ...prev, [address]: profile.name }));
+      }
+      if (profile?.imgUri) {
+        setAnsUris(prev => ({ ...prev, [address]: profile.imgUri }));
+      }
+    } catch (error) {
+      console.error('Error fetching ANS:', error);
+    }
   };
 
   useEffect(() => {
@@ -81,6 +103,22 @@ export const ActivityEvents = ({ }) => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
+  useEffect(() => {
+    if (wallet?.account?.address) {
+      fetchAnsProfile(wallet.account.address);
+    }
+  }, [wallet?.account?.address]);
+
+  useEffect(() => {
+    const uniqueCallers = Array.from(new Set(callerCounts.map(c => c.address)));
+    uniqueCallers.forEach(caller => fetchAnsProfile(caller));
+  }, [callerCounts]);
+
+  useEffect(() => {
+    const uniqueEvents = Array.from(new Set(events.map(event => event.fields.caller)));
+    uniqueEvents.forEach(caller => fetchAnsProfile(caller));
+  }, [events]);
+
   const formatAddress = (address: string, isMobile: boolean) => {
     return isMobile ? 
       `${address.slice(0, 6)}...${address.slice(-4)}` : 
@@ -96,7 +134,7 @@ export const ActivityEvents = ({ }) => {
             <div key={caller.address} className={styles.leaderboardItem}>
               <span className={styles.rank}>#{index + 1}</span>
               <span className={styles.address}>
-                {formatAddress(caller.address, isMobile)}
+                {ansNames[caller.address] || formatAddress(caller.address, isMobile)}
               </span>
               <span className={styles.count}>{caller.count} mints</span>
             </div>
@@ -125,7 +163,7 @@ export const ActivityEvents = ({ }) => {
                 <div className={styles.addressRow}>
                   <span className={styles.label}>Caller:</span>
                   <span className={styles.address}>
-                    {formatAddress((event.fields as {caller: Address}).caller, isMobile)}
+                    {ansNames[(event.fields as { caller: Address }).caller] || formatAddress((event.fields as { caller: Address }).caller, isMobile)}
                   </span>
                 </div>
                 {event.name === 'PixelSet' ? (
@@ -138,7 +176,7 @@ export const ActivityEvents = ({ }) => {
                   <div className={styles.addressRow}>
                     <span className={styles.label}>Original Minter:</span>
                     <span className={styles.address}>
-                      {formatAddress((event.fields as {firstMinter: Address}).firstMinter, isMobile)}
+                      {ansNames[(event.fields as { firstMinter: Address }).firstMinter] || formatAddress((event.fields as { firstMinter: Address }).firstMinter, isMobile)}
                     </span>
                   </div>
                 )}
