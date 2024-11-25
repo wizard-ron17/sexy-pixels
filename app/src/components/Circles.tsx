@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import styles from 'src/styles/Background.module.css';
 
 const BackgroundCircles = () => {
@@ -27,7 +27,7 @@ const BackgroundCircles = () => {
             circle.style.animationDelay = `${delay}s`;
             circle.style.background = color;
 
-            circlesContainer.appendChild(circle);
+            circlesContainer?.appendChild(circle);
         }
     }, []);
 
