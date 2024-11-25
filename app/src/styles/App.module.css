@@ -43,22 +43,26 @@
 
  .modal {
    display: flex;
+   justify-content: center;
+   align-items: center;
    position: fixed;
    z-index: 1;
    left: 0;
    top: 0;
    width: 100%;
    height: 100%;
-   justify-content: center;
-   align-items: center;
-   background-color: rgba(0, 0, 0, 0.5);
+   background-color: rgba(0, 0, 0, 0.4);
+   border-radius: 12px;
  }
  
  .modalContent {
    background-color: #444;
-   padding: 10px;
-   border: 1px solid #888;
-   border-image: linear-gradient(45deg, #ff4081, #33ff57, #3357ff, #ffff33, #ff33ff, #33ffff, #ff4081) 3;
+   padding: 20px;
+   border-radius: 12px;
+   background: 
+     linear-gradient(#444, #444) padding-box,
+     linear-gradient(45deg, #ff4081, #33ff57, #3357ff, #ffff33, #ff33ff, #33ffff, #ff4081) border-box;
+   border: 2px solid transparent;
    width: 50%;
    color: #fff;
    text-align: center;
