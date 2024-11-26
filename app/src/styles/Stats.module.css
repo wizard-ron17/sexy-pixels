@@ -4,6 +4,52 @@
   margin-bottom: .7rem;
 }
 
+/* Add responsive layout for mobile */
+@media (max-width: 768px) {
+  .statsContainer {
+    flex-direction: row;
+    gap: 0.4rem;
+    margin: 0.3rem;
+    justify-content: center;
+    padding-top: 1.5rem;
+  }
+
+  .statBox {
+    width: 26%;
+    min-height: 70px;
+    padding: 0.4rem 0.3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  .statLabel {
+    font-size: clamp(0.35rem, 1vw, 0.4rem);
+    margin-bottom: 0.2rem;
+    white-space: normal;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .statValue {
+    font-size: clamp(0.4rem, 1.2vw, 0.45rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 2px;
+    line-height: 1.1;
+    text-align: center;
+  }
+
+  .fireIcon {
+    width: clamp(7px, 1.2vw, 9px);
+    height: clamp(7px, 1.2vw, 9px);
+    margin-left: 1px;
+    vertical-align: middle;
+  }
+}
+
 .statBox {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1));
   border: 1px solid rgba(255, 255, 255, 0.1);

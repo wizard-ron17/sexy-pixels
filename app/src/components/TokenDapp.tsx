@@ -291,7 +291,7 @@ export const TokenDapp: FC<{
           <div className={styles.statBox}>
             <div className={styles.statLabel}>Minted Pixels</div>
             <div className={styles.statValue}>
-              {Number(contractState.fields.numPxMinted)}/{gridSize * gridSize}
+              {Number(contractState.fields.numPxMinted)} / {gridSize * gridSize}
             </div>
           </div>
           <div className={styles.statBox}>
