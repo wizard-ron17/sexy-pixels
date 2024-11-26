@@ -67,7 +67,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -96,7 +97,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -131,7 +133,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -147,7 +150,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb3'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -177,7 +181,8 @@ describe('integration tests', () => {
             x: x,
             y: y,
             color: stringToHex('a3ffb4'),
-            amountToBurn: 2n * ONE_ALPH
+            amountToBurn: 2n * ONE_ALPH,
+            isShiny: false
           },
           signer: creator,
           attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -203,7 +208,8 @@ describe('integration tests', () => {
             x: x,
             y: y,
             color: stringToHex('a3ffb4'),
-            amountToBurn: 2n * ONE_ALPH
+            amountToBurn: 2n * ONE_ALPH,
+            isShiny: false
           },
           signer: creator,
           attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -228,7 +234,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -242,7 +249,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb2'),
-          amountToBurn: 2n * ONE_ALPH
+          amountToBurn: 2n * ONE_ALPH,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + 2n * ONE_ALPH
@@ -254,9 +262,7 @@ describe('integration tests', () => {
   })
 
   describe('pixel interaction with custom token', () => {
-    
-   it('set new pixel', async () => {
-
+    it('set new pixel', async () => {
       const customToken = await mintToken(creator.address, 1000n)
 
       const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 2n)
@@ -273,14 +279,17 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 2n
+          amountToBurn: 2n,
+          isShiny: false
         },
         signer: creator,
-        tokens:[{
-           id: customToken.tokenId,
-           amount: 2n
-        }],
-        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 2n
+          }
+        ],
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
 
       state = await factory.fetchState()
@@ -291,30 +300,29 @@ describe('integration tests', () => {
       expect((await px.get(cartesianToByteVec(Number(x), Number(y))))?.color).toBe(stringToHex('a3ffb4'))
       expect(state.fields.balanceBurn).toEqual(2n)
 
-
       await factory.transact.setPixel({
-         args: {
-           x: 1n,
-           y: 0n,
-           color: stringToHex('a3ffb4'),
-           amountToBurn: 2n
-         },
-         signer: creator,
-         tokens:[{
+        args: {
+          x: 1n,
+          y: 0n,
+          color: stringToHex('a3ffb4'),
+          amountToBurn: 2n,
+          isShiny: false
+        },
+        signer: creator,
+        tokens: [
+          {
             id: customToken.tokenId,
             amount: 2n
-         }],
-         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
-       })
-       
-       state = await factory.fetchState()
-      expect(state.fields.balanceBurn).toEqual(4n)
+          }
+        ],
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
+      })
 
+      state = await factory.fetchState()
+      expect(state.fields.balanceBurn).toEqual(4n)
     })
 
-
     it('set new pixel with not enough tokens to burn', async () => {
-
       const customToken = await mintToken(creator.address, 1000n)
 
       const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 3n)
@@ -326,26 +334,27 @@ describe('integration tests', () => {
       const x = 2n
       const y = 3n
 
-
       expectAssertionError(
-         factory.transact.setPixel({
-            args: {
-              x: x,
-              y: y,
-              color: stringToHex('a3ffb4'),
-              amountToBurn: 2n
-            },
-            signer: creator,
-            tokens:[{
-               id: customToken.tokenId,
-               amount: 2n
-            }],
-            attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT,
-          }),
-         factory.address,
-         2
-       )
-
+        factory.transact.setPixel({
+          args: {
+            x: x,
+            y: y,
+            color: stringToHex('a3ffb4'),
+            amountToBurn: 2n,
+            isShiny: false
+          },
+          signer: creator,
+          tokens: [
+            {
+              id: customToken.tokenId,
+              amount: 2n
+            }
+          ],
+          attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
+        }),
+        factory.address,
+        2
+      )
     })
 
     it('set new pixel and reset it', async () => {
@@ -365,13 +374,16 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 1n
+          amountToBurn: 1n,
+          isShiny: false
         },
         signer: creator,
-        tokens:[{
-         id: customToken.tokenId,
-         amount: 1n
-      }],
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 1n
+          }
+        ],
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
 
@@ -387,7 +399,87 @@ describe('integration tests', () => {
       })
 
       expect(await px.contains(cartesianToByteVec(Number(x), Number(y)))).toEqual(false)
+    })
 
+    it('set new SHINY pixel and reset it', async () => {
+      const customToken = await mintToken(creator.address, 1000n)
+      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n)
+
+      expect(contractResult).toBeDefined()
+      const factory = contractResult.contractInstance
+
+      const px = factory.maps.pixels
+
+      const x = 2n
+      const y = 3n
+
+      await factory.transact.setPixel({
+        args: {
+          x: x,
+          y: y,
+          color: stringToHex('a3ffb4'),
+          amountToBurn: 1n * 10n,
+          isShiny: true
+        },
+        signer: creator,
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 1n * 10n
+          }
+        ],
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
+      })
+
+      expect(await px.contains(cartesianToByteVec(Number(x), Number(y)))).toEqual(true)
+
+      await factory.transact.resetPixel({
+        args: {
+          x: x,
+          y: y
+        },
+        signer: creator,
+        attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
+      })
+
+      expect(await px.contains(cartesianToByteVec(Number(x), Number(y)))).toEqual(false)
+    })
+
+    it('set new SHINY pixel with not enough funds', async () => {
+      const customToken = await mintToken(creator.address, 1000n)
+      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n)
+
+      expect(contractResult).toBeDefined()
+      const factory = contractResult.contractInstance
+
+      const px = factory.maps.pixels
+
+      const x = 2n
+      const y = 3n
+
+      expectAssertionError(
+        factory.transact.setPixel({
+          args: {
+            x: x,
+            y: y,
+            color: stringToHex('a3ffb4'),
+            amountToBurn: 1n*10n,
+            isShiny: true
+          },
+          signer: creator,
+          tokens: [
+            {
+              id: customToken.tokenId,
+              amount: 1n*10n
+            }
+          ],
+          attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
+        }),
+        factory.address,
+        2
+      )
+
+      expect(await px.contains(cartesianToByteVec(Number(x), Number(y)))).toEqual(false)
     })
 
     it('set new pixel and replace it', async () => {
@@ -407,13 +499,16 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 1n
+          amountToBurn: 1n,
+          isShiny: false
         },
         signer: creator,
-        tokens:[{
-         id: customToken.tokenId,
-         amount: 1n
-      }],
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 1n
+          }
+        ],
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
 
@@ -427,13 +522,16 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb3'),
-          amountToBurn: 1n
+          amountToBurn: 1n,
+          isShiny: false
         },
         signer: creator,
-        tokens:[{
-         id: customToken.tokenId,
-         amount: 1n
-      }],
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 1n
+          }
+        ],
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
 
@@ -462,12 +560,15 @@ describe('integration tests', () => {
             x: x,
             y: y,
             color: stringToHex('a3ffb4'),
-            amountToBurn: 1n
+            amountToBurn: 1n,
+            isShiny: false
           },
-          tokens:[{
-            id: customToken.tokenId,
-            amount: 1n
-         }],
+          tokens: [
+            {
+              id: customToken.tokenId,
+              amount: 1n
+            }
+          ],
           signer: creator,
           attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
         }),
@@ -494,12 +595,15 @@ describe('integration tests', () => {
             x: x,
             y: y,
             color: stringToHex('a3ffb4'),
-            amountToBurn: 1n
+            amountToBurn: 1n,
+            isShiny: false
           },
-          tokens:[{
-            id: customToken.tokenId,
-            amount: 1n
-         }],
+          tokens: [
+            {
+              id: customToken.tokenId,
+              amount: 1n
+            }
+          ],
           signer: creator,
           attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
         }),
@@ -525,12 +629,15 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb4'),
-          amountToBurn: 0n
+          amountToBurn: 0n,
+          isShiny: false
         },
-        tokens:[{
-         id: customToken.tokenId,
-         amount: 1n
-      }],
+        tokens: [
+          {
+            id: customToken.tokenId,
+            amount: 1n
+          }
+        ],
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
       })
@@ -543,7 +650,8 @@ describe('integration tests', () => {
           x: x,
           y: y,
           color: stringToHex('a3ffb2'),
-          amountToBurn: 0n
+          amountToBurn: 0n,
+          isShiny: false
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT + DUST_AMOUNT
@@ -551,8 +659,6 @@ describe('integration tests', () => {
 
       state = await PixelFactory.at(factory.address).fetchState()
       expect(state.fields.numPxMinted).toEqual(1n)
-
-      
     })
   })
 })

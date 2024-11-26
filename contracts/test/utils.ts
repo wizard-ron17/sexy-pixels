@@ -41,7 +41,8 @@ export async function deployPixelFactory(signer: SignerProvider, tokenId: string
        balanceBurn: 0n,
        burnMint: burnMint,
        tokenIdToBurn: tokenId,
-       numPxMinted: 0n
+       numPxMinted: 0n,
+       shinyMultiplier: 10n
     },
     initialAttoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
   })
