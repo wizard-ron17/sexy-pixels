@@ -1,4 +1,5 @@
 struct Pixel {
+   mut shiny: Bool, // blinking pixel
    mut color: ByteVec, //hex color
    mut firstMinter: Address // used to send back the alph back when removed
 }
@@ -7,6 +8,7 @@ Contract PixelFactory(
    maxX: U256,
    maxY: U256,
    burnMint: U256,
+   shinyMultiplier: U256,
    tokenIdToBurn: ByteVec,
    mut numPxMinted: U256,
    mut balanceBurn: U256
@@ -14,7 +16,7 @@ Contract PixelFactory(
    
    mapping[ByteVec, Pixel] pixels
    
-   event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec)
+   event PixelSet(caller: Address, x: U256, y: U256, color: ByteVec, isShiny: Bool)
    event PixelReset(caller: Address, firstMinter: Address, x: U256, y: U256)
 
    enum ErrorCodes {
@@ -44,7 +46,7 @@ Contract PixelFactory(
    }
 
    @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
-   pub fn setPixel(x: U256, y: U256, color: ByteVec, amountToBurn: U256) -> (){
+   pub fn setPixel(x: U256, y: U256, color: ByteVec, amountToBurn: U256, isShiny: Bool) -> (){
       assert!(x <= maxX && y <= maxY,ErrorCodes.OutsideGrid)
       assert!(amountToBurn >= burnMint, ErrorCodes.NotEnoughFunds)
 
@@ -52,11 +54,17 @@ Contract PixelFactory(
 
       let coordinates = cartesianToByteVec(x,y)
       let mut newPixel = Pixel {
+         shiny: isShiny,
          color: color,
          firstMinter: caller
       }
 
       let mut amountBurned = amountToBurn
+      if(isShiny){
+         assert!(amountToBurn >= burnMint * shinyMultiplier, ErrorCodes.NotEnoughFunds)
+         amountBurned = burnMint * shinyMultiplier
+      }
+
       if (!pixels.contains!(coordinates)){
          if(tokenIdToBurn == ALPH && burnMint > 0) {
             amountBurned = amountToBurn - minimalContractDeposit!()
@@ -77,7 +85,7 @@ Contract PixelFactory(
       }
       
 
-      emit PixelSet(caller, x, y, color) 
+      emit PixelSet(caller, x, y, color, isShiny) 
 
    }
 

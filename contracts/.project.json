@@ -1,5 +1,5 @@
 {
-  "fullNodeVersion": "v3.8.0",
+  "fullNodeVersion": "v3.8.8",
   "compilerOptionsUsed": {
     "ignoreUnusedConstantsWarnings": false,
     "ignoreUnusedVariablesWarnings": false,
@@ -13,15 +13,15 @@
   "infos": {
     "Pixel": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "c957d9a5164919def7ebf96b790014a8c89e8f99f4326e37fb04be66387c8ad0",
+      "sourceCodeHash": "e858d27782c12383ff7f20e9a7b3fe622bc978262f886989f9b2fc2764aa29d9",
       "bytecodeDebugPatch": "",
       "codeHashDebug": ""
     },
     "PixelFactory": {
       "sourceFile": "pixelFactory.ral",
-      "sourceCodeHash": "c957d9a5164919def7ebf96b790014a8c89e8f99f4326e37fb04be66387c8ad0",
-      "bytecodeDebugPatch": "=18-1=1-1=1-2+420e=259-1+6=133-1+d=84+7a7e0214696e73657274206174206d617020706174683a2000=255-1+3=182+7a7e021472656d6f7665206174206d617020706174683a2000=36",
-      "codeHashDebug": "55cdb6e7a3748436883730ef42f00f9eedc027946b384b38bc90d2faf3f87aeb"
+      "sourceCodeHash": "e858d27782c12383ff7f20e9a7b3fe622bc978262f886989f9b2fc2764aa29d9",
+      "bytecodeDebugPatch": "=18-2+b7=2-2+4d=273-1+3=183-1+e=84+7a7e0214696e73657274206174206d617020706174683a2000=299-1+9=200+7a7e021472656d6f7665206174206d617020706174683a2000=36",
+      "codeHashDebug": "362f7cd38abed40c01347fac5e7de2e057e8bea25a4e70777353f4308736661d"
     }
   }
 }
