@@ -194,7 +194,8 @@ export const TokenDapp: FC<{
           x,
           y,
           selectedColor,
-          contractState.fields.burnMint
+          contractState.fields.burnMint,
+          false
         );
 
         updateBalanceForTx(result.txId);
