@@ -119,7 +119,15 @@ export const ActivityEvents: React.FC = () => {
   return (
     <div className={styles.container}>
       <div className={styles.leaderboard}>
-        <h2 className={styles.leaderboardTitle}>Top 10 Minters</h2>
+        <div className={styles.leaderboardHeader}>
+          <h2 className={styles.leaderboardTitle}>
+            Top 10 Minters
+          </h2>
+          <a href="https://www.alephium.domains/dashboard" target="_blank" rel="noopener noreferrer" className={styles.getNameButton}>
+            <img src="https://github.com/alephium/token-list/raw/master/logos/ANSd.png" alt="ANS Logo" className={styles.ansLogo} />
+            Get a name
+          </a>
+        </div>
         <div className={styles.leaderboardList}>
           {callerCounts.slice(0, 10).map((caller, index) => (
             <div key={caller.address} className={styles.leaderboardItem}>

@@ -175,6 +175,53 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.ansLogo {
+  width: 20px;
+  height: auto;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+
+.getNameText {
+  margin-left: 8px;
+  color: #fff;
+  font-size: 1rem;
+  vertical-align: middle;
+}
+
+.getNameButton {
+  display: inline-flex;
+  align-items: center;
+  padding: 10px 10px;
+  background-color: #444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  text-decoration: none;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.getNameButton:hover {
+  background-color: #555;
+  text-decoration: none;
+}
+
+.ansLogo {
+  width: 20px;
+  height: auto;
+  margin-right: 8px;
+}
+
+.leaderboardHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 /* Mobile-first styles */
 @media (max-width: 768px) {
   .container {
@@ -222,4 +269,16 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
+
+  .getNameButton {
+    margin-top: 0px;
+    width: 50%;
+    padding: 6px 0px;
+  }
+
+  .leaderboardHeader {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
 } 
