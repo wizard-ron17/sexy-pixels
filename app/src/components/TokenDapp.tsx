@@ -89,18 +89,23 @@ export const TokenDapp: FC<{
 
   useEffect(() => {
     if (eventCounter >= contractEventsCount && contractEventsCount > 0) {
-      const newPixels = Array(gridSize * gridSize).fill("#333");
-      
+      const newPixels = Array(gridSize * gridSize).fill("#333"); // Default color for all pixels
+
       eventsReceived.forEach(event => {
         const indexNewPx = getIndexFromCoordinates(
           Number(event.fields.x),
           Number(event.fields.y)
         );
-        
+
         if (event.name === 'PixelSet' && 'color' in event.fields) {
-          newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`;
-        } else if (event.name === 'PixelReset') {
-          newPixels[indexNewPx] = '#333';
+          const pixelColor = `#${hexToString(event.fields.color)}`;
+
+          // Check if the pixel is shiny
+          if (event.fields.isShiny) {
+            newPixels[indexNewPx] = pixelColor; // Set shiny pixel to its color
+          } else {
+            newPixels[indexNewPx] = pixelColor; // Set regular pixel color
+          }
         }
       });
 
@@ -239,18 +244,25 @@ export const TokenDapp: FC<{
 
   const memoizedPixels = useMemo(
     () =>
-      pixels.map((color, index) => (
-        <div
-          key={index}
-          className={gridStyles.pixel}
-          style={{ backgroundColor: color }}
-          onClick={() => handlePixelClick(index)}
-          title={`${getGridCoordinates(index)[0]}, ${
-            getGridCoordinates(index)[1]
-          }`}
-        />
-      )),
-    [pixels, handlePixelClick]
+      pixels.map((color, index) => {
+        const pixelData = eventsReceived.find(event => {
+          const indexNewPx = getIndexFromCoordinates(Number(event.fields.x), Number(event.fields.y));
+          return indexNewPx === index && event.name === 'PixelSet';
+        });
+
+        const isShiny = pixelData ? pixelData.fields.isShiny : false;
+
+        return (
+          <div
+            key={index}
+            className={`${gridStyles.pixel} ${isShiny ? gridStyles.blink : ''}`}
+            style={{ backgroundColor: isShiny ? color : color }} // Use the color for both shiny and non-shiny
+            onClick={() => handlePixelClick(index)}
+            title={`${getGridCoordinates(index)[0]}, ${getGridCoordinates(index)[1]}`}
+          />
+        );
+      }),
+    [pixels, eventsReceived, handlePixelClick]
   );
 
   useEffect(() => {
@@ -274,6 +286,43 @@ export const TokenDapp: FC<{
       setShowConnectMessage(false);
     }
   }, [connectionStatus, pendingPixelClick, pixels]);
+
+  const handleShinyColorSubmit = useCallback(async () => {
+    if (selectedPixel !== null && selectedColor) {
+      // Check if user has enough tokens
+      if (contractState && tokenBalance !== undefined && tokenMetadata) {
+        const requiredAmount = Number(contractState.fields.burnMint) * 10; // 10x for shiny
+        if (tokenBalance < requiredAmount) {
+          setInsufficientTokens(true);
+          return;
+        }
+      }
+
+      setPixels((prevPixels) => {
+        const newPixels = [...prevPixels];
+        newPixels[selectedPixel] = selectedColor; // Update color
+        return newPixels;
+      });
+
+      if (signer && contractState !== null) {
+        const [x, y] = getGridCoordinates(selectedPixel);
+        const result = await mintPx(
+          signer,
+          contractState.fields.tokenIdToBurn,
+          x,
+          y,
+          selectedColor,
+          contractState.fields.burnMint * BigInt(10), // 10x for shiny
+          true // Set isShiny to true
+        );
+
+        updateBalanceForTx(result.txId);
+        setOngoingTxId(result.txId);
+      }
+      setModalVisible(false);
+      setSelectedPixel(null);
+    }
+  }, [selectedPixel, selectedColor, signer, contractState, tokenBalance]);
 
   return (
     <>
@@ -359,6 +408,9 @@ export const TokenDapp: FC<{
             <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
             {selectedColor ? 'Mint' : 'Choose a color'}
 
+            </button>
+            <button id="makeItShineButton" onClick={handleShinyColorSubmit} disabled={!selectedColor}>
+              Make it Shine
             </button>
           </div>
         </div>

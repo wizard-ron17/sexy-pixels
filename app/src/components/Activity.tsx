@@ -149,8 +149,17 @@ export const ActivityEvents: React.FC = () => {
           {events.slice().reverse().map((event, index) => (
             <div key={index} className={styles.activityCard}>
               <div className={styles.activityHeader}>
-                <span className={styles.eventType}>
-                  {event.name === 'PixelSet' ? '🎨 Pixel Set' : '🔄 Pixel Reset'}
+                <span 
+                  className={styles.eventType} 
+                  style={{ 
+                    color: event.name === 'PixelSet' && event.fields.isShiny ? 'gold' : 
+                           event.name === 'PixelSet' ? '#00ff00' : // Green for normal Pixel Set
+                           event.name === 'PixelReset' ? 'red' : 'inherit' // Red for Pixel Reset
+                  }}
+                >
+                  {event.name === 'PixelSet' && event.fields.isShiny ? '✨ Shiny Pixel Set' : 
+                   event.name === 'PixelSet' ? '🎨 Pixel Set' : 
+                   '🔄 Pixel Reset'}
                 </span>
                 <span className={styles.timestamp}>
                   Block: {isMobile ? 
