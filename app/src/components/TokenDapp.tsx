@@ -38,6 +38,12 @@ const colors = [
   "#008888",
 ];
 
+interface Pixel {
+ color: string,
+ isShiny: boolean  
+}
+
+
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
@@ -99,15 +105,21 @@ export const TokenDapp: FC<{
 
         if (event.name === 'PixelSet' && 'color' in event.fields) {
           const pixelColor = `#${hexToString(event.fields.color)}`;
-          newPixels[indexNewPx] = pixelColor; // Set regular pixel color
+          newPixels[indexNewPx] = {
+            color: pixelColor,
+            isShiny: false
+          } // Set regular pixel color
 
          if(event.fields.isShiny){
-            newPixels[indexNewPx] = pixelColor+":s"
+            newPixels[indexNewPx] = {
+               color: pixelColor,
+               isShiny: true
+             } // Set regular pixel color
           }
          
        
         }else if (event.name === 'PixelReset') {
-         newPixels[indexNewPx] = '#333';
+         newPixels[indexNewPx] = {color: '#333', isShiny: false};
        }
       });
 
@@ -155,7 +167,7 @@ export const TokenDapp: FC<{
 
       const currentColor = pixels[index];
       setSelectedPixel(index);
-      if (currentColor === "#333") {
+      if (currentColor.color === "#333") {
         setIsResetModal(false);
         setModalVisible(true);
       } else {
@@ -270,11 +282,11 @@ export const TokenDapp: FC<{
 
   const memoizedPixels = useMemo(
    () =>
-     pixels.map((color, index) => (
+     pixels.map((pixel, index) => (
        <div
          key={index}
-         className={`${gridStyles.pixel} ${color.split(":").length > 1 ? gridStyles.blink : ''}`}
-         style={{  backgroundColor: color  }}
+         className={`${gridStyles.pixel} ${pixel.isShiny ? gridStyles.blink : ''}`}
+         style={{  backgroundColor: pixel.color  }}
          onClick={() => handlePixelClick(index)}
          title={`${getGridCoordinates(index)[0]}, ${
            getGridCoordinates(index)[1]
