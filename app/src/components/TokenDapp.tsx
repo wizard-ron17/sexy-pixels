@@ -99,14 +99,16 @@ export const TokenDapp: FC<{
 
         if (event.name === 'PixelSet' && 'color' in event.fields) {
           const pixelColor = `#${hexToString(event.fields.color)}`;
+          newPixels[indexNewPx] = pixelColor; // Set regular pixel color
 
-          // Check if the pixel is shiny
-          if (event.fields.isShiny) {
-            newPixels[indexNewPx] = pixelColor; // Set shiny pixel to its color
-          } else {
-            newPixels[indexNewPx] = pixelColor; // Set regular pixel color
+         if(event.fields.isShiny){
+            newPixels[indexNewPx] = pixelColor+":s"
           }
-        }
+         
+       
+        }else if (event.name === 'PixelReset') {
+         newPixels[indexNewPx] = '#333';
+       }
       });
 
       setPixels(newPixels);
@@ -242,7 +244,7 @@ export const TokenDapp: FC<{
     setSelectedPixel(null);
   }, []);
 
-  const memoizedPixels = useMemo(
+ /* const memoizedPixels = useMemo(
     () =>
       pixels.map((color, index) => {
         const pixelData = eventsReceived.find(event => {
@@ -263,7 +265,24 @@ export const TokenDapp: FC<{
         );
       }),
     [pixels, eventsReceived, handlePixelClick]
-  );
+  );*/
+
+
+  const memoizedPixels = useMemo(
+   () =>
+     pixels.map((color, index) => (
+       <div
+         key={index}
+         className={`${gridStyles.pixel} ${color.split(":").length > 1 ? gridStyles.blink : ''}`}
+         style={{  backgroundColor: color  }}
+         onClick={() => handlePixelClick(index)}
+         title={`${getGridCoordinates(index)[0]}, ${
+           getGridCoordinates(index)[1]
+         }`}
+       />
+     )),
+   [pixels, handlePixelClick]
+ );
 
   useEffect(() => {
     if (connectionStatus === "connected") {
