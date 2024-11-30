@@ -26,7 +26,7 @@ export default function Docs() {
         <main>
           
           <section className={styles.docsSection}>
-            <h3 className={styles.sectionHeading}>Inspiration</h3>
+            <h3 className={styles.sectionHeading}>🧠 Inspiration</h3>
             <div className={styles.docsContent}>
               <p>
                 The $EXY PIXELS project draws inspiration from the iconic <a href="https://en.wikipedia.org/wiki/R/place" target="_blank" rel="noopener noreferrer">r/place experiment</a>, 
@@ -38,7 +38,21 @@ export default function Docs() {
           </section>
 
           <section className={styles.docsSection}>
-            <h3 className={styles.sectionHeading}>Minting</h3>
+            <h3 className={styles.sectionHeading}>📝 About</h3>
+            <div className={styles.docsContent}>
+              <p>
+                $EXY PIXELS is a social experiment and game for the Alephium Community in which 
+                users paint a picture on the same canvas pixel by pixel. It's purpose is to make the
+                act of burning tokens fun. Users burn $EXY to mint pixels and claim their territory
+                on the canvas. It's an experiment because I don't know the outcome. Will the grid be
+                an ugly mess of pixels? Will users collaborate to create larger pictures together? Will
+                minters battle over territory? Nobody knows, but I'm eager to find out.
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.docsSection}>
+            <h3 className={styles.sectionHeading}>🎨 Minting</h3>
             <div className={styles.docsContent}>
               <p>
                 $EXY PIXELS operates through a smart contract on the Alephium blockchain. 
@@ -52,7 +66,20 @@ export default function Docs() {
           </section>
 
           <section className={styles.docsSection}>
-            <h3 className={styles.sectionHeading}>Resetting & Recoloring</h3>
+            <h3 className={styles.sectionHeading}>✨ Shiny Pixels</h3>
+            <div className={styles.docsContent}>
+              <p>
+                Shiny Pixels are pixels that standout by blinking/shining on the canvas.
+                These pixels are special; they burn 10x more tokens than regular pixels (6900 $EXY).
+                Players can use these unique pixels to add a sense of animation to their artwork. 
+                To mint a shiny pixel, follow the same process as minting a normal pixel, but use the
+                "Make It Shine" button instead of the "Mint" Button. 
+              </p>
+            </div>
+          </section>
+
+          <section className={styles.docsSection}>
+            <h3 className={styles.sectionHeading}>🔄 Resetting & Recoloring</h3>
             <div className={styles.docsContent}>
               <p>
                 Pixels can also be reset to their default uncolored state, or recolored to a new color. To do so,
@@ -64,10 +91,10 @@ export default function Docs() {
           </section>
 
           <section className={styles.docsSection}>
-            <h3 className={styles.sectionHeading}>What's Next?</h3>
+            <h3 className={styles.sectionHeading}>🔮 What's Next?</h3>
             <div className={styles.docsContent}>
               <p>
-                We plan on expanding the grid to be larger than 20x20. Additionally, we want to add various mechanics
+                We plan on expanding the grid to be larger than 50x50. Additionally, we want to add various mechanics
                 and features to gamify the project. Giving the user the ability to create their own custom grids that 
                 burn whatever token they want is also on the agenda for V2.
               </p>

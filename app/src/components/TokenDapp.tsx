@@ -165,12 +165,16 @@ export const TokenDapp: FC<{
         return;
       }
 
-      const currentColor = pixels[index];
+      const currentPixel = pixels[index];
       setSelectedPixel(index);
-      if (currentColor.color === "#333") {
+
+      // Check if the pixel is uncolored
+      if (currentPixel === "#333") {
+        // Show the mint modal for uncolored pixels
         setIsResetModal(false);
         setModalVisible(true);
       } else {
+        // Show the reset modal for colored pixels
         setIsResetModal(true);
         setModalVisible(true);
       }
@@ -414,16 +418,29 @@ export const TokenDapp: FC<{
                 selectedPixel && getGridCoordinates(selectedPixel)[1]
               }`}
             </h2>
-            <p>Contract Fee: 0.1 ALPH</p>
+            <p>Contract Fee: <strong>0.1 ALPH</strong></p>
+
             <p>
-              You will burn:{" "}
+              You will burn:<strong>{" "}
               {contractState !== null && tokenMetadata !== undefined
                 ? `${
                     Number(contractState.fields.burnMint) /
                     10 ** tokenMetadata.decimals
                   } ${tokenMetadata?.symbol}`
                 : "0"}
+                </strong>
             </p>
+
+            <p>
+              *Shiny pixels burn 10x more than normal pixels:{" "}
+              {contractState !== null && tokenMetadata !== undefined
+                ? `${
+                    Number(contractState.fields.burnMint) /
+                    10 ** tokenMetadata.decimals * 10
+                  } ${tokenMetadata?.symbol}`
+                : "0"}*
+            </p>
+            
             <div id="colorOptions">
               {colors.map((color) => (
                 <div
@@ -438,10 +455,10 @@ export const TokenDapp: FC<{
             </div>
             <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
             {selectedColor ? 'Mint' : 'Choose a color'}
-
             </button>
+
             <button id="makeItShineButton" onClick={handleShinyColorSubmit} disabled={!selectedColor}>
-              Make it Shine
+            {selectedColor ? 'Make it Shine' : 'Choose a color'}
             </button>
           </div>
         </div>

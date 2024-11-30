@@ -299,18 +299,3 @@
     visibility: hidden;
   }
 }
-
-.makeItShineButton {
-  background: linear-gradient(45deg, #ffd700, #ffcc00); /* Golden gradient */
-  border: none; /* Remove default border */
-  color: white; /* Text color */
-  padding: 10px 20px; /* Padding for the button */
-  border-radius: 5px; /* Rounded corners */
-  cursor: pointer; /* Pointer cursor on hover */
-  margin-left: 8px; /* Small left margin */
-  transition: background 0.3s; /* Smooth background transition */
-}
-
-.makeItShineButton:hover {
-  background: linear-gradient(45deg, #ffcc00, #ffd700); /* Reverse gradient on hover */
-}
