@@ -41,7 +41,8 @@ export const ActivityEvents: React.FC = () => {
 
   const fetchAnsProfile = async (address: string) => {
     try {
-      const ans = new ANS('mainnet');
+      const ans = new ANS('mainnet', false, (process.env.NODE_URL as string) ??
+      "https://fullnode-testnet.alephium.notrustverify.ch");
       const profile = await ans.getProfile(address);
       if (profile?.name) {
         setAnsNames(prev => ({ ...prev, [address]: profile.name }));
@@ -152,12 +153,12 @@ export const ActivityEvents: React.FC = () => {
                 <span 
                   className={styles.eventType} 
                   style={{ 
-                    color: event.name === 'PixelSet' && event.fields.isShiny ? 'gold' : 
-                           event.name === 'PixelSet' ? '#00ff00' : // Green for normal Pixel Set
-                           event.name === 'PixelReset' ? 'red' : 'inherit' // Red for Pixel Reset
+                    color: event.name === 'PixelSet' ? 
+                           (event.fields as { isShiny?: boolean }).isShiny ? 'gold' : '#00ff00' : 
+                           event.name === 'PixelReset' ? 'red' : 'inherit'
                   }}
                 >
-                  {event.name === 'PixelSet' && event.fields.isShiny ? '✨ Shiny Pixel Set' : 
+                  {event.name === 'PixelSet' && (event.fields as { isShiny?: boolean }).isShiny ? '✨ Shiny Pixel Set' : 
                    event.name === 'PixelSet' ? '🎨 Pixel Set' : 
                    '🔄 Pixel Reset'}
                 </span>

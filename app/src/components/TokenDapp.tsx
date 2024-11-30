@@ -54,7 +54,7 @@ export const TokenDapp: FC<{
   const [selectedPixel, setSelectedPixel] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [contractState, setContractState] =useState<PixelFactoryTypes.State | null>(null);
-  const [pixels, setPixels] = useState(Array(gridSize * gridSize).fill("#333"));
+  const [pixels, setPixels] = useState<Pixel[]>(Array(gridSize * gridSize).fill({color: "#333"}));
   const [loading, setLoading] = useState(true); // Loading state
   const [eventData, setEventData] =
     useState<PixelFactoryTypes.PixelSetEvent | null>(null);
@@ -78,8 +78,12 @@ export const TokenDapp: FC<{
         pollingInterval: 1000,
         messageCallback: async (event: PixelFactoryTypes.PixelSetEvent
           | PixelFactoryTypes.PixelResetEvent): Promise<void> => {
-          setEventCounter(prev => prev + 1);
-          setEventsReceived(prev => [...prev, event]);
+          setEventsReceived(prev => {
+            const newEvents = [...prev, event];
+            const uniqueBlockhashes = new Set(newEvents.map(e => e.blockHash));
+            setEventCounter(uniqueBlockhashes.size);
+            return newEvents;
+          });
           return Promise.resolve();
         },
         errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
@@ -95,7 +99,7 @@ export const TokenDapp: FC<{
 
   useEffect(() => {
     if (eventCounter >= contractEventsCount && contractEventsCount > 0) {
-      const newPixels = Array(gridSize * gridSize).fill("#333"); // Default color for all pixels
+      const newPixels = Array(gridSize * gridSize).fill({color: "#333"}); // Default color for all pixels
 
       eventsReceived.forEach(event => {
         const indexNewPx = getIndexFromCoordinates(
@@ -128,6 +132,7 @@ export const TokenDapp: FC<{
     }
   }, [eventCounter, contractEventsCount, eventsReceived]);
 
+
   useEffect(() => {
     if(connectionStatus === "connected" && contractState !== null && balance !== undefined){
       const tokenBalanceWallet = balance.tokenBalances?.find(
@@ -157,6 +162,7 @@ export const TokenDapp: FC<{
 
     initializePixels();
   }, []);
+
   const handlePixelClick = useCallback(
     (index: number) => {
       if (connectionStatus !== "connected") {
@@ -169,7 +175,7 @@ export const TokenDapp: FC<{
       setSelectedPixel(index);
 
       // Check if the pixel is uncolored
-      if (currentPixel === "#333") {
+      if (currentPixel.color === "#333") {
         // Show the mint modal for uncolored pixels
         setIsResetModal(false);
         setModalVisible(true);
@@ -203,7 +209,7 @@ export const TokenDapp: FC<{
 
       setPixels((prevPixels) => {
         const newPixels = [...prevPixels];
-        newPixels[selectedPixel] = selectedColor;
+        newPixels[selectedPixel] = {color: selectedColor, isShiny: false};
         return newPixels;
       });
 
@@ -237,7 +243,7 @@ export const TokenDapp: FC<{
 
     setPixels((prevPixels) => {
       const newPixels = [...prevPixels];
-      newPixels[selectedPixel] = "#333";
+      newPixels[selectedPixel] = {color: '#333', isShiny: false};
       return newPixels;
     });
     try {
@@ -310,7 +316,7 @@ export const TokenDapp: FC<{
     if (connectionStatus === "connected" && pendingPixelClick !== null) {
       const currentColor = pixels[pendingPixelClick];
       setSelectedPixel(pendingPixelClick);
-      if (currentColor === "#333") {
+      if (currentColor.color === "#333") {
         setIsResetModal(false);
         setModalVisible(true);
       } else {
@@ -326,7 +332,7 @@ export const TokenDapp: FC<{
     if (selectedPixel !== null && selectedColor) {
       // Check if user has enough tokens
       if (contractState && tokenBalance !== undefined && tokenMetadata) {
-        const requiredAmount = Number(contractState.fields.burnMint) * 10; // 10x for shiny
+        const requiredAmount = Number(contractState.fields.burnMint) * Number(contractState.fields.shinyMultiplier); // 10x for shiny
         if (tokenBalance < requiredAmount) {
           setInsufficientTokens(true);
           return;
@@ -335,7 +341,7 @@ export const TokenDapp: FC<{
 
       setPixels((prevPixels) => {
         const newPixels = [...prevPixels];
-        newPixels[selectedPixel] = selectedColor; // Update color
+        newPixels[selectedPixel] = {color: selectedColor, isShiny: true}; // Update color
         return newPixels;
       });
 
@@ -432,13 +438,13 @@ export const TokenDapp: FC<{
             </p>
 
             <p>
-              *Shiny pixels burn 10x more than normal pixels:{" "}
+              <b>Shiny pixels burn {Number(contractState?.fields.shinyMultiplier)}x more than normal pixels:{" "}
               {contractState !== null && tokenMetadata !== undefined
                 ? `${
                     Number(contractState.fields.burnMint) /
-                    10 ** tokenMetadata.decimals * 10
+                    10 ** tokenMetadata.decimals * Number(contractState?.fields.shinyMultiplier)
                   } ${tokenMetadata?.symbol}`
-                : "0"}*
+                : "0"}</b>
             </p>
             
             <div id="colorOptions">
