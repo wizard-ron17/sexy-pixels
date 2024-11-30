@@ -5,7 +5,7 @@
    align-items: center;
    background-color: transparent;
    color: #fff;
-   min-height: 100vh;
+   min-height: 80vh;
    overflow-x: hidden;
    padding-top: 50px;
  }
@@ -131,7 +131,7 @@
  /* Mobile Styles */
  @media (max-width: 600px) {
    .App {
-     padding-top: 20px;
+     padding-top: 15px;
      min-height: 100vh;
      position: relative;
      overflow-y: auto;
