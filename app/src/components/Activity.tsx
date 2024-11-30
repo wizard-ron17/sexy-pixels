@@ -41,7 +41,8 @@ export const ActivityEvents: React.FC = () => {
 
   const fetchAnsProfile = async (address: string) => {
     try {
-      const ans = new ANS('mainnet');
+      const ans = new ANS('mainnet', false, (process.env.NODE_URL as string) ??
+      "https://fullnode-testnet.alephium.notrustverify.ch");
       const profile = await ans.getProfile(address);
       if (profile?.name) {
         setAnsNames(prev => ({ ...prev, [address]: profile.name }));
@@ -149,8 +150,17 @@ export const ActivityEvents: React.FC = () => {
           {events.slice().reverse().map((event, index) => (
             <div key={index} className={styles.activityCard}>
               <div className={styles.activityHeader}>
-                <span className={styles.eventType}>
-                  {event.name === 'PixelSet' ? '🎨 Pixel Set' : '🔄 Pixel Reset'}
+                <span 
+                  className={styles.eventType} 
+                  style={{ 
+                    color: event.name === 'PixelSet' ? 
+                           (event.fields as { isShiny?: boolean }).isShiny ? 'gold' : '#00ff00' : 
+                           event.name === 'PixelReset' ? 'red' : 'inherit'
+                  }}
+                >
+                  {event.name === 'PixelSet' && (event.fields as { isShiny?: boolean }).isShiny ? '✨ Shiny Pixel Set' : 
+                   event.name === 'PixelSet' ? '🎨 Pixel Set' : 
+                   '🔄 Pixel Reset'}
                 </span>
                 <span className={styles.timestamp}>
                   Block: {isMobile ? 

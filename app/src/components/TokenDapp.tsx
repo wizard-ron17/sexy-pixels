@@ -38,6 +38,12 @@ const colors = [
   "#008888",
 ];
 
+interface Pixel {
+ color: string,
+ isShiny: boolean  
+}
+
+
 export const TokenDapp: FC<{
   config: TokenFaucetConfig;
 }> = ({ config }) => {
@@ -48,7 +54,7 @@ export const TokenDapp: FC<{
   const [selectedPixel, setSelectedPixel] = useState<number | null>(null);
   const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [contractState, setContractState] =useState<PixelFactoryTypes.State | null>(null);
-  const [pixels, setPixels] = useState(Array(gridSize * gridSize).fill("#333"));
+  const [pixels, setPixels] = useState<Pixel[]>(Array(gridSize * gridSize).fill({color: "#333"}));
   const [loading, setLoading] = useState(true); // Loading state
   const [eventData, setEventData] =
     useState<PixelFactoryTypes.PixelSetEvent | null>(null);
@@ -72,8 +78,12 @@ export const TokenDapp: FC<{
         pollingInterval: 1000,
         messageCallback: async (event: PixelFactoryTypes.PixelSetEvent
           | PixelFactoryTypes.PixelResetEvent): Promise<void> => {
-          setEventCounter(prev => prev + 1);
-          setEventsReceived(prev => [...prev, event]);
+          setEventsReceived(prev => {
+            const newEvents = [...prev, event];
+            const uniqueBlockhashes = new Set(newEvents.map(e => e.blockHash));
+            setEventCounter(uniqueBlockhashes.size);
+            return newEvents;
+          });
           return Promise.resolve();
         },
         errorCallback: (error: any, subscription: { unsubscribe: () => void; }): Promise<void> => {
@@ -89,25 +99,39 @@ export const TokenDapp: FC<{
 
   useEffect(() => {
     if (eventCounter >= contractEventsCount && contractEventsCount > 0) {
-      const newPixels = Array(gridSize * gridSize).fill("#333");
-      
+      const newPixels = Array(gridSize * gridSize).fill({color: "#333"}); // Default color for all pixels
+
       eventsReceived.forEach(event => {
         const indexNewPx = getIndexFromCoordinates(
           Number(event.fields.x),
           Number(event.fields.y)
         );
-        
+
         if (event.name === 'PixelSet' && 'color' in event.fields) {
-          newPixels[indexNewPx] = `#${hexToString(event.fields.color)}`;
-        } else if (event.name === 'PixelReset') {
-          newPixels[indexNewPx] = '#333';
-        }
+          const pixelColor = `#${hexToString(event.fields.color)}`;
+          newPixels[indexNewPx] = {
+            color: pixelColor,
+            isShiny: false
+          } // Set regular pixel color
+
+         if(event.fields.isShiny){
+            newPixels[indexNewPx] = {
+               color: pixelColor,
+               isShiny: true
+             } // Set regular pixel color
+          }
+         
+       
+        }else if (event.name === 'PixelReset') {
+         newPixels[indexNewPx] = {color: '#333', isShiny: false};
+       }
       });
 
       setPixels(newPixels);
       setLoading(false);
     }
   }, [eventCounter, contractEventsCount, eventsReceived]);
+
 
   useEffect(() => {
     if(connectionStatus === "connected" && contractState !== null && balance !== undefined){
@@ -138,6 +162,7 @@ export const TokenDapp: FC<{
 
     initializePixels();
   }, []);
+
   const handlePixelClick = useCallback(
     (index: number) => {
       if (connectionStatus !== "connected") {
@@ -146,12 +171,16 @@ export const TokenDapp: FC<{
         return;
       }
 
-      const currentColor = pixels[index];
+      const currentPixel = pixels[index];
       setSelectedPixel(index);
-      if (currentColor === "#333") {
+
+      // Check if the pixel is uncolored
+      if (currentPixel.color === "#333") {
+        // Show the mint modal for uncolored pixels
         setIsResetModal(false);
         setModalVisible(true);
       } else {
+        // Show the reset modal for colored pixels
         setIsResetModal(true);
         setModalVisible(true);
       }
@@ -180,7 +209,7 @@ export const TokenDapp: FC<{
 
       setPixels((prevPixels) => {
         const newPixels = [...prevPixels];
-        newPixels[selectedPixel] = selectedColor;
+        newPixels[selectedPixel] = {color: selectedColor, isShiny: false};
         return newPixels;
       });
 
@@ -214,7 +243,7 @@ export const TokenDapp: FC<{
 
     setPixels((prevPixels) => {
       const newPixels = [...prevPixels];
-      newPixels[selectedPixel] = "#333";
+      newPixels[selectedPixel] = {color: '#333', isShiny: false};
       return newPixels;
     });
     try {
@@ -237,21 +266,45 @@ export const TokenDapp: FC<{
     setSelectedPixel(null);
   }, []);
 
-  const memoizedPixels = useMemo(
+ /* const memoizedPixels = useMemo(
     () =>
-      pixels.map((color, index) => (
-        <div
-          key={index}
-          className={gridStyles.pixel}
-          style={{ backgroundColor: color }}
-          onClick={() => handlePixelClick(index)}
-          title={`${getGridCoordinates(index)[0]}, ${
-            getGridCoordinates(index)[1]
-          }`}
-        />
-      )),
-    [pixels, handlePixelClick]
-  );
+      pixels.map((color, index) => {
+        const pixelData = eventsReceived.find(event => {
+          const indexNewPx = getIndexFromCoordinates(Number(event.fields.x), Number(event.fields.y));
+          return indexNewPx === index && event.name === 'PixelSet';
+        });
+
+        const isShiny = pixelData ? pixelData.fields.isShiny : false;
+
+        return (
+          <div
+            key={index}
+            className={`${gridStyles.pixel} ${isShiny ? gridStyles.blink : ''}`}
+            style={{ backgroundColor: isShiny ? color : color }} // Use the color for both shiny and non-shiny
+            onClick={() => handlePixelClick(index)}
+            title={`${getGridCoordinates(index)[0]}, ${getGridCoordinates(index)[1]}`}
+          />
+        );
+      }),
+    [pixels, eventsReceived, handlePixelClick]
+  );*/
+
+
+  const memoizedPixels = useMemo(
+   () =>
+     pixels.map((pixel, index) => (
+       <div
+         key={index}
+         className={`${gridStyles.pixel} ${pixel.isShiny ? gridStyles.blink : ''}`}
+         style={{  backgroundColor: pixel.color  }}
+         onClick={() => handlePixelClick(index)}
+         title={`${getGridCoordinates(index)[0]}, ${
+           getGridCoordinates(index)[1]
+         }`}
+       />
+     )),
+   [pixels, handlePixelClick]
+ );
 
   useEffect(() => {
     if (connectionStatus === "connected") {
@@ -263,7 +316,7 @@ export const TokenDapp: FC<{
     if (connectionStatus === "connected" && pendingPixelClick !== null) {
       const currentColor = pixels[pendingPixelClick];
       setSelectedPixel(pendingPixelClick);
-      if (currentColor === "#333") {
+      if (currentColor.color === "#333") {
         setIsResetModal(false);
         setModalVisible(true);
       } else {
@@ -274,6 +327,43 @@ export const TokenDapp: FC<{
       setShowConnectMessage(false);
     }
   }, [connectionStatus, pendingPixelClick, pixels]);
+
+  const handleShinyColorSubmit = useCallback(async () => {
+    if (selectedPixel !== null && selectedColor) {
+      // Check if user has enough tokens
+      if (contractState && tokenBalance !== undefined && tokenMetadata) {
+        const requiredAmount = Number(contractState.fields.burnMint) * Number(contractState.fields.shinyMultiplier); // 10x for shiny
+        if (tokenBalance < requiredAmount) {
+          setInsufficientTokens(true);
+          return;
+        }
+      }
+
+      setPixels((prevPixels) => {
+        const newPixels = [...prevPixels];
+        newPixels[selectedPixel] = {color: selectedColor, isShiny: true}; // Update color
+        return newPixels;
+      });
+
+      if (signer && contractState !== null) {
+        const [x, y] = getGridCoordinates(selectedPixel);
+        const result = await mintPx(
+          signer,
+          contractState.fields.tokenIdToBurn,
+          x,
+          y,
+          selectedColor,
+          contractState.fields.burnMint * BigInt(10), // 10x for shiny
+          true // Set isShiny to true
+        );
+
+        updateBalanceForTx(result.txId);
+        setOngoingTxId(result.txId);
+      }
+      setModalVisible(false);
+      setSelectedPixel(null);
+    }
+  }, [selectedPixel, selectedColor, signer, contractState, tokenBalance]);
 
   return (
     <>
@@ -334,16 +424,29 @@ export const TokenDapp: FC<{
                 selectedPixel && getGridCoordinates(selectedPixel)[1]
               }`}
             </h2>
-            <p>Contract Fee: 0.1 ALPH</p>
+            <p>Contract Fee: <strong>0.1 ALPH</strong></p>
+
             <p>
-              You will burn:{" "}
+              You will burn:<strong>{" "}
               {contractState !== null && tokenMetadata !== undefined
                 ? `${
                     Number(contractState.fields.burnMint) /
                     10 ** tokenMetadata.decimals
                   } ${tokenMetadata?.symbol}`
                 : "0"}
+                </strong>
             </p>
+
+            <p>
+              <b>Shiny pixels burn {Number(contractState?.fields.shinyMultiplier)}x more than normal pixels:{" "}
+              {contractState !== null && tokenMetadata !== undefined
+                ? `${
+                    Number(contractState.fields.burnMint) /
+                    10 ** tokenMetadata.decimals * Number(contractState?.fields.shinyMultiplier)
+                  } ${tokenMetadata?.symbol}`
+                : "0"}</b>
+            </p>
+            
             <div id="colorOptions">
               {colors.map((color) => (
                 <div
@@ -358,7 +461,10 @@ export const TokenDapp: FC<{
             </div>
             <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
             {selectedColor ? 'Mint' : 'Choose a color'}
+            </button>
 
+            <button id="makeItShineButton" onClick={handleShinyColorSubmit} disabled={!selectedColor}>
+            {selectedColor ? 'Make it Shine' : 'Choose a color'}
             </button>
           </div>
         </div>

@@ -638,3 +638,23 @@ main {
     margin-top: 10px;
   }
 }
+
+#makeItShineButton {
+  background: linear-gradient(45deg, #ffd700, #786518); /* Golden gradient */
+  border: none; /* Remove default border */
+  color: white; /* Text color */
+  padding: 10px 20px; /* Padding for the button */
+  border-radius: 10px; /* Rounded corners */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin-left: 8px; /* Small left margin */
+  transition: background 0.3s; /* Smooth background transition */
+}
+
+#makeItShineButton:hover {
+  background: linear-gradient(45deg, #dfc531, #816c18); /* Reverse gradient on hover */
+}
+
+#makeItShineButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}

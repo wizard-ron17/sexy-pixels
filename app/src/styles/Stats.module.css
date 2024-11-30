@@ -1,7 +1,6 @@
 .statsContainer {
   display: flex;
   gap: 2rem;
-  margin-bottom: .7rem;
 }
 
 /* Add responsive layout for mobile */

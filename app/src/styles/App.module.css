@@ -279,3 +279,29 @@
    border-radius: 8px;
    text-align: center;
  }
+
+ @keyframes glow {
+   0% { 
+     box-shadow: 0 0 2px #ffd700,
+                 0 0 4px #ffd700,
+                 0 0 6px #ffd700;
+   }
+   50% { 
+     box-shadow: 0 0 4px #ffd700,
+                 0 0 8px #ffd700,
+                 0 0 12px #ffd700,
+                 0 0 16px #ffd700;
+   }
+   100% { 
+     box-shadow: 0 0 2px #ffd700,
+                 0 0 4px #ffd700,
+                 0 0 6px #ffd700;
+   }
+ }
+
+ .blink {
+   animation: glow 2s ease-in-out infinite;
+   z-index: 1;
+   border-radius: 15%;
+ }
+

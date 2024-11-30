@@ -163,7 +163,6 @@
 
 .address {
   font-family: monospace;
-  background: rgba(255, 255, 255, 0.1);
   padding: 2px 6px;
   border-radius: 4px;
 }
@@ -220,6 +219,30 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+}
+
+.leaderboardItem:nth-child(1) .address {
+  background: linear-gradient(90deg, #ffd700, #ffcc00); /* Gold */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.leaderboardItem:nth-child(2) .address {
+  background: linear-gradient(90deg, #c0c0c0, #a8a8a8); /* Silver */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+.leaderboardItem:nth-child(3) .address {
+  background: linear-gradient(90deg, #cd7f32, #b76e3d); /* Bronze */
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
 }
 
 /* Mobile-first styles */
