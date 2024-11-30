@@ -10,7 +10,7 @@ export interface TokenList {
 }
 
 web3.setCurrentNodeProvider(
-  (process.env.NODE_URL as string) ??
+  (process.env.NEXT_PUBLIC_NODE_URL as string) ??
     "https://fullnode-testnet.alephium.notrustverify.ch",
   undefined,
   undefined

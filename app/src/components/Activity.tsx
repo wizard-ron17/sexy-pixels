@@ -41,7 +41,7 @@ export const ActivityEvents: React.FC = () => {
 
   const fetchAnsProfile = async (address: string) => {
     try {
-      const ans = new ANS('mainnet', false, (process.env.NODE_URL as string) ??
+      const ans = new ANS('mainnet', false, (process.env.NEXT_PUBLIC_NODE_URL as string) ??
       "https://lb-fullnode-alephium.notrustverify.ch");
       const profile = await ans.getProfile(address);
       if (profile?.name) {
