@@ -12,8 +12,8 @@ const deployFaucet: DeployFunction<Settings> = async (
   // Get settings
   const result = await deployer.deployContract(PixelFactory, {
      initialFields: {
-        maxX: 69n,
-        maxY: 69n,
+        maxX: 99n,
+        maxY: 99n,
         burnMint: 1n * 10n ** 18n,
         tokenIdToBurn: "8e6877d8dee708506625a77d73f62210dce24564cfa9ec93c0df02f2ba519b00",
         numPxMinted: 0n,

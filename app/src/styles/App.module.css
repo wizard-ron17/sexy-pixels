@@ -102,6 +102,7 @@
    margin: 5px;
    cursor: pointer;
    border: 2px solid #fff;
+   border-radius: 25%;
    transition: transform 0.2s ease, border-color 0.2s ease;
  }
  
