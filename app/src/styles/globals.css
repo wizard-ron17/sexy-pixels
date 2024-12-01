@@ -362,6 +362,7 @@ button {
   font-weight: bold;
   line-height: var(--line-height);
   padding: 10px 20px;
+  margin-right: 8px;
 }
 
 button.flat {
@@ -646,7 +647,6 @@ main {
   padding: 10px 20px; /* Padding for the button */
   border-radius: 10px; /* Rounded corners */
   cursor: pointer; /* Pointer cursor on hover */
-  margin-left: 8px; /* Small left margin */
   transition: background 0.3s; /* Smooth background transition */
 }
 

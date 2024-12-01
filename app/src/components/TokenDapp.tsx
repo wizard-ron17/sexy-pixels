@@ -508,10 +508,13 @@ export const TokenDapp: FC<{
             <button id="resetColor" onClick={handleResetSubmit}>
               Reset Pixel
             </button>
-            &nbsp;
+
             <button id="submitColor" onClick={handleColorSubmit} disabled={!selectedColor}>
             {selectedColor ? 'Recolor' : 'Choose a color'}
-            
+            </button>
+
+            <button id="makeItShineButton" onClick={handleShinyColorSubmit} disabled={!selectedColor}>
+            {selectedColor ? 'Make it Shine' : 'Choose a color'}
             </button>
           </div>
         </div>
