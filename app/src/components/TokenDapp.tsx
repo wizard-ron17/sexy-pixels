@@ -491,6 +491,15 @@ export const TokenDapp: FC<{
                   } ${tokenMetadata?.symbol}`
                 : "0"}
             </p>}
+            <p>
+              <b>Shiny pixels burn {Number(contractState?.fields.shinyMultiplier)}x more than normal pixels:{" "}
+              {contractState !== null && tokenMetadata !== undefined
+                ? `${
+                    Number(contractState.fields.burnMint) /
+                    10 ** tokenMetadata.decimals * Number(contractState?.fields.shinyMultiplier)
+                  } ${tokenMetadata?.symbol}`
+                : "0"}</b>
+            </p>
           <div id="colorOptions">
               {colors.map((color) => (
                 <div
