@@ -390,8 +390,8 @@ export const TokenDapp: FC<{
             <div className={styles.statValue}>
               {tokenMetadata !== undefined ? (
                 <>
-                  {Number(contractState.fields.balanceBurn) /
-                    10 ** tokenMetadata?.decimals}{" "}
+                  {Math.floor(Number(contractState.fields.balanceBurn) /
+                    10 ** tokenMetadata?.decimals)}{" "}
                   {tokenMetadata.symbol}
                   <img
                     src="https://i.gifer.com/origin/a9/a95ef9bce2a1d53accc6a8018df04ff6_w200.gif"
