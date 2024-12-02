@@ -9,6 +9,7 @@ Contract PixelFactory(
    maxY: U256,
    burnMint: U256,
    shinyMultiplier: U256,
+   resetBurnMultiplier: U256,
    tokenIdToBurn: ByteVec,
    mut numPxMinted: U256,
    mut balanceBurn: U256
@@ -84,21 +85,29 @@ Contract PixelFactory(
          burnToken!(caller, tokenIdToBurn, amountBurned)
       }
       
-
       emit PixelSet(caller, x, y, color, isShiny) 
 
    }
 
-   @using(checkExternalCaller = false, updateFields = true)
-   pub fn resetPixel(x: U256, y: U256) -> (){
+   @using(preapprovedAssets = true, checkExternalCaller = false, updateFields = true)
+   pub fn resetPixel(x: U256, y: U256, amountToBurn: U256) -> (){
+      assert!(amountToBurn >= burnMint * resetBurnMultiplier, ErrorCodes.NotEnoughFunds)
       let coordinates = cartesianToByteVec(x,y)
       assert!(pixels.contains!(cartesianToByteVec(x,y)), ErrorCodes.PixelNotExist)
       let pixel = pixels[coordinates]
+      let caller = callerAddress!()
+
+      let amountBurned = burnMint * resetBurnMultiplier
+
+      balanceBurn = amountBurned + balanceBurn
+      if(burnMint > 0){
+         burnToken!(caller, tokenIdToBurn, amountBurned)
+      }
 
       pixels.remove!(pixel.firstMinter, coordinates)
 
       numPxMinted = numPxMinted - 1 //not sure we reduce it because funds are still in the smart contract
-      emit PixelReset(callerAddress!(), pixel.firstMinter, x, y)
+      emit PixelReset(caller, pixel.firstMinter, x, y)
    }
 
 
