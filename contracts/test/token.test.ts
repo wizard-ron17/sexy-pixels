@@ -360,7 +360,7 @@ describe('integration tests', () => {
 
     it('set new pixel and reset it', async () => {
       const customToken = await mintToken(creator.address, 1000n)
-      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n)
+      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n, 2n)
 
       expect(contractResult).toBeDefined()
       const factory = contractResult.contractInstance
@@ -410,7 +410,7 @@ describe('integration tests', () => {
 
     it('set new SHINY pixel and reset it', async () => {
       const customToken = await mintToken(creator.address, 1000n)
-      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n)
+      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n,2n)
 
       expect(contractResult).toBeDefined()
       const factory = contractResult.contractInstance
@@ -444,8 +444,14 @@ describe('integration tests', () => {
         args: {
            x: x,
            y: y,
-           amountToBurn: 0n
+           amountToBurn: 2n
         },
+        tokens: [
+         {
+           id: customToken.tokenId,
+           amount: 2n * 10n
+         }
+       ],
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
@@ -471,14 +477,14 @@ describe('integration tests', () => {
             x: x,
             y: y,
             color: stringToHex('a3ffb4'),
-            amountToBurn: 1n*10n,
+            amountToBurn: 1n*9n,
             isShiny: true
           },
           signer: creator,
           tokens: [
             {
               id: customToken.tokenId,
-              amount: 1n*10n
+              amount: 1n*9n
             }
           ],
           attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
@@ -553,7 +559,7 @@ describe('integration tests', () => {
 
     it('should test x outside the grid', async () => {
       const customToken = await mintToken(creator.address, 1000n)
-      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n)
+      const contractResult = await deployPixelFactory(defaultSigner, customToken.contractId, 1n,2n)
       expect(contractResult).toBeDefined()
       const factory = contractResult.contractInstance
 
