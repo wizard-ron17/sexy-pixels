@@ -8,6 +8,7 @@ import {
   NetworkId,
 } from "@alephium/web3";
 import { PixelFactory, PixelFactoryInstance } from ".";
+import { default as mainnetDeployments } from "../../deployments/.deployments.mainnet.json";
 import { default as testnetDeployments } from "../../deployments/.deployments.testnet.json";
 import { default as devnetDeployments } from "../../deployments/.deployments.devnet.json";
 
@@ -38,7 +39,9 @@ export function loadDeployments(
   deployerAddress?: string
 ): Deployments {
   const deployments =
-    networkId === "testnet"
+    networkId === "mainnet"
+      ? mainnetDeployments
+      : networkId === "testnet"
       ? testnetDeployments
       : networkId === "devnet"
       ? devnetDeployments
