@@ -108,8 +108,9 @@ describe('integration tests', () => {
 
       await factory.transact.resetPixel({
         args: {
-          x: x,
-          y: y
+           x: x,
+           y: y,
+           amountToBurn: 0n
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
@@ -391,10 +392,16 @@ describe('integration tests', () => {
 
       await factory.transact.resetPixel({
         args: {
-          x: x,
-          y: y
+           x: x,
+           y: y,
+           amountToBurn: 2n
         },
         signer: creator,
+        tokens: [
+         {
+           id: customToken.tokenId,
+           amount: 2n
+         }],
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
       })
 
@@ -435,8 +442,9 @@ describe('integration tests', () => {
 
       await factory.transact.resetPixel({
         args: {
-          x: x,
-          y: y
+           x: x,
+           y: y,
+           amountToBurn: 0n
         },
         signer: creator,
         attoAlphAmount: MINIMAL_CONTRACT_DEPOSIT

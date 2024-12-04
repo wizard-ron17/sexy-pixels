@@ -10,7 +10,7 @@ import LaunchOverlay from '@/components/LaunchOverlay'
 
 export default function Home() {
   const { connectionStatus } = useWallet()
-  const [showOverlay, setShowOverlay] = useState(true)
+  const [showOverlay, setShowOverlay] = useState(false)
 
   const handleCloseOverlay = () => {
     setShowOverlay(false)

@@ -18,7 +18,8 @@ const deployFaucet: DeployFunction<Settings> = async (
         tokenIdToBurn: "8e6877d8dee708506625a77d73f62210dce24564cfa9ec93c0df02f2ba519b00",
         numPxMinted: 0n,
         balanceBurn: 0n,
-        shinyMultiplier: 10n
+        shinyMultiplier: 10n,
+        resetBurnMultiplier: 2n
      }
   })
   console.log('Token faucet contract id: ' + result.contractInstance.contractId)

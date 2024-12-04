@@ -45,6 +45,7 @@ export namespace PixelFactoryTypes {
     maxY: bigint;
     burnMint: bigint;
     shinyMultiplier: bigint;
+    resetBurnMultiplier: bigint;
     tokenIdToBurn: HexString;
     numPxMinted: bigint;
     balanceBurn: bigint;
@@ -90,7 +91,11 @@ export namespace PixelFactoryTypes {
       result: CallContractResult<null>;
     };
     resetPixel: {
-      params: CallContractParams<{ x: bigint; y: bigint }>;
+      params: CallContractParams<{
+        x: bigint;
+        y: bigint;
+        amountToBurn: bigint;
+      }>;
       result: CallContractResult<null>;
     };
   }
@@ -134,7 +139,11 @@ export namespace PixelFactoryTypes {
       result: SignExecuteScriptTxResult;
     };
     resetPixel: {
-      params: SignExecuteContractMethodParams<{ x: bigint; y: bigint }>;
+      params: SignExecuteContractMethodParams<{
+        x: bigint;
+        y: bigint;
+        amountToBurn: bigint;
+      }>;
       result: SignExecuteScriptTxResult;
     };
   }
@@ -234,7 +243,7 @@ class Factory extends ContractFactory<
     resetPixel: async (
       params: TestContractParams<
         PixelFactoryTypes.Fields,
-        { x: bigint; y: bigint },
+        { x: bigint; y: bigint; amountToBurn: bigint },
         PixelFactoryTypes.Maps
       >
     ): Promise<TestContractResult<null, PixelFactoryTypes.Maps>> => {
@@ -256,8 +265,8 @@ class Factory extends ContractFactory<
 export const PixelFactory = new Factory(
   Contract.fromJson(
     PixelFactoryContractJson,
-    "=18-2+b7=2-2+4d=273-1+3=183-1+e=84+7a7e0214696e73657274206174206d617020706174683a2000=299-1+9=200+7a7e021472656d6f7665206174206d617020706174683a2000=36",
-    "362f7cd38abed40c01347fac5e7de2e057e8bea25a4e70777353f4308736661d",
+    "=18-2+b7=2-2+76=273-1+3=183-1+e=84+7a7e0214696e73657274206174206d617020706174683a2000=299-1+2=280+7a7e021472656d6f7665206174206d617020706174683a2000=38",
+    "e34a83a6d85ce5d5bbccfde7d7db90f1964ca5b09993b7902798fea2b4579d89",
     AllStructs
   )
 );
