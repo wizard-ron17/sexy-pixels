@@ -10,7 +10,7 @@
     "compile": "yarn workspace my-contracts compile",
     "deploy": "yarn workspace my-contracts deploy",
     "build:contracts": "yarn workspace my-contracts build",
-    "dev": "NEXT_PUBLIC_NETWORK=testnet yarn workspace my-dapp dev",
+    "dev": "yarn workspace my-dapp dev",
     "start": "yarn workspace my-dapp start",
     "build:app": "yarn workspace my-dapp build"
   },
