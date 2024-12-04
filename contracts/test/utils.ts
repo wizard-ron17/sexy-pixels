@@ -33,7 +33,7 @@ export async function getRandomSigner(group?: number): Promise<PrivateKeyWallet>
   return pkWallet
 }
 
-export async function deployPixelFactory(signer: SignerProvider, tokenId: string, burnMint: bigint ) {
+export async function deployPixelFactory(signer: SignerProvider, tokenId: string, burnMint: bigint, resetBurnMultiplier?: bigint ) {
   return await PixelFactory.deploy(signer, {
     initialFields: {
        maxX: 4n,
@@ -42,7 +42,8 @@ export async function deployPixelFactory(signer: SignerProvider, tokenId: string
        burnMint: burnMint,
        tokenIdToBurn: tokenId,
        numPxMinted: 0n,
-       shinyMultiplier: 10n
+       shinyMultiplier: 10n,
+      resetBurnMultiplier: resetBurnMultiplier ? resetBurnMultiplier : 0n
     },
     initialAttoAlphAmount: MINIMAL_CONTRACT_DEPOSIT
   })
