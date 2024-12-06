@@ -15,19 +15,36 @@ export const StatsDisplay: React.FC<StatsDisplayProps> =  ({
   gridSize,
 }) => {
     const [burnRatio, setBurnRatio] = React.useState<number>(1);
+    const [exPrice, setExPrice] = React.useState<number>(0);
 
+    useEffect(() => {
+        const fetchPrices = async () => {
+            try {
+                const response = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=elexium&vs_currencies=usd');
+                const data = await response.json();
+                setExPrice(data['elexium'].usd);
+            } catch (error) {
+                console.error('Failed to fetch EX price:', error);
+            }
+        };
 
-useEffect(() => {
-    const fetchBalances = async () => {
-        const [ex, sexy] = await Promise.all([
-            balanceOf("275YMYo21Hw4REEY2SXhweMHTXSpAP9dBUUGNtwGGX3SF", "cad22f7c98f13fe249c25199c61190a9fb4341f8af9b1c17fcff4cd4b2c3d200") as Promise<bigint>,
-            balanceOf("275YMYo21Hw4REEY2SXhweMHTXSpAP9dBUUGNtwGGX3SF", contractState.fields.tokenIdToBurn) as Promise<bigint>
-        ]);
-              setBurnRatio(Number(ex)/Number(sexy));
+        fetchPrices();
+        const interval = setInterval(fetchPrices, 600000); // Update price every minute
 
-    };
-    fetchBalances();
-}, [])
+        return () => clearInterval(interval);
+    }, []);
+
+    useEffect(() => {
+        const fetchBalances = async () => {
+            const [ex, sexy] = await Promise.all([
+                balanceOf("275YMYo21Hw4REEY2SXhweMHTXSpAP9dBUUGNtwGGX3SF", "cad22f7c98f13fe249c25199c61190a9fb4341f8af9b1c17fcff4cd4b2c3d200") as Promise<bigint>,
+                balanceOf("275YMYo21Hw4REEY2SXhweMHTXSpAP9dBUUGNtwGGX3SF", contractState.fields.tokenIdToBurn) as Promise<bigint>
+            ]);
+                  setBurnRatio(Number(ex)/Number(sexy));
+
+        };
+        fetchBalances();
+    }, [])
 
 
   return (
@@ -66,6 +83,13 @@ useEffect(() => {
                 ~ {((Number(contractState.fields.balanceBurn) /
                   10 ** tokenMetadata.decimals
                 ) * burnRatio).toFixed(2)} EX
+                {exPrice > 0 && (
+                    <div>
+                        (≈ ${((Number(contractState.fields.balanceBurn) /
+                            10 ** tokenMetadata.decimals
+                        ) * burnRatio * exPrice).toFixed(2)} USD)
+                    </div>
+                )}
               </>
             )}
           </div>
