@@ -22,4 +22,10 @@
 
 .docsContent p {
   margin: 0;
-} 
+}
+
+@media (max-width: 460px) {
+    .docsSection {
+      margin-top: 35px; /* Push content down by 20px */
+    }
+  }

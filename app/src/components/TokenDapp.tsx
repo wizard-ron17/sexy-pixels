@@ -428,13 +428,13 @@ export const TokenDapp: FC<{
       {contractState !== null && (
         <div className={styles.statsContainer}>
           <div className={styles.statBox}>
-            <div className={styles.statLabel}>Minted Pixels</div>
+            <div className={styles.statLabel}>Minted</div>
             <div className={styles.statValue}>
               {Number(contractState.fields.numPxMinted)} / {gridSize * gridSize}
             </div>
           </div>
           <div className={styles.statBox}>
-            <div className={styles.statLabel}>Tokens Burned</div>
+            <div className={styles.statLabel}>Burned</div>
             <div className={styles.statValue}>
               {tokenMetadata !== undefined ? (
                 <>
