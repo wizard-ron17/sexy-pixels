@@ -137,16 +137,26 @@ export const TokenDapp: FC<{
           newPixels[indexNewPx] = {
             color: pixelColor,
             isShiny: false,
-          }; // Set regular pixel color
+          };
 
           if (event.fields.isShiny) {
             newPixels[indexNewPx] = {
               color: pixelColor,
               isShiny: true,
-            }; // Set regular pixel color
+            };
           }
+          
+          // Update contract state when a pixel is set
+          contractFactory.fetchState().then(newState => {
+            setContractState(newState);
+          });
         } else if (event.name === "PixelReset") {
           newPixels[indexNewPx] = { color: "#333", isShiny: false };
+          
+          // Update contract state when a pixel is reset
+          contractFactory.fetchState().then(newState => {
+            setContractState(newState);
+          });
         }
       });
 
@@ -438,9 +448,11 @@ export const TokenDapp: FC<{
             <div className={styles.statValue}>
               {tokenMetadata !== undefined ? (
                 <>
-                  {Math.floor(
-                    Number(contractState.fields.balanceBurn) /
+                  {new Intl.NumberFormat('en-US', { notation: 'compact' }).format(
+                    Math.floor(
+                      Number(contractState.fields.balanceBurn) /
                       10 ** tokenMetadata?.decimals
+                    )
                   )}{" "}
                   {tokenMetadata.symbol}
                   <img
