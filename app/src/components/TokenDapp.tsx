@@ -28,6 +28,7 @@ import {
 import { mintPx, resetPx } from "@/services/token.service";
 import { PixelFactoryTypes } from "my-contracts";
 import styles from "../styles/Stats.module.css";
+import { StatsDisplay } from './StatsDisplay';
 
 const colors = [
   "#FF5733",
@@ -323,28 +324,6 @@ export const TokenDapp: FC<{
     setSelectedPixel(null);
   }, []);
 
-  /* const memoizedPixels = useMemo(
-    () =>
-      pixels.map((color, index) => {
-        const pixelData = eventsReceived.find(event => {
-          const indexNewPx = getIndexFromCoordinates(Number(event.fields.x), Number(event.fields.y));
-          return indexNewPx === index && event.name === 'PixelSet';
-        });
-
-        const isShiny = pixelData ? pixelData.fields.isShiny : false;
-
-        return (
-          <div
-            key={index}
-            className={`${gridStyles.pixel} ${isShiny ? gridStyles.blink : ''}`}
-            style={{ backgroundColor: isShiny ? color : color }} // Use the color for both shiny and non-shiny
-            onClick={() => handlePixelClick(index)}
-            title={`${getGridCoordinates(index)[0]}, ${getGridCoordinates(index)[1]}`}
-          />
-        );
-      }),
-    [pixels, eventsReceived, handlePixelClick]
-  );*/
 
   const memoizedPixels = useMemo(
     () =>
@@ -436,37 +415,11 @@ export const TokenDapp: FC<{
         </div>
       )}
       {contractState !== null && (
-        <div className={styles.statsContainer}>
-          <div className={styles.statBox}>
-            <div className={styles.statLabel}>Minted</div>
-            <div className={styles.statValue}>
-              {Number(contractState.fields.numPxMinted)} / {gridSize * gridSize}
-            </div>
-          </div>
-          <div className={styles.statBox}>
-            <div className={styles.statLabel}>Burned</div>
-            <div className={styles.statValue}>
-              {tokenMetadata !== undefined ? (
-                <>
-                  {new Intl.NumberFormat('en-US', { notation: 'compact' }).format(
-                    Math.floor(
-                      Number(contractState.fields.balanceBurn) /
-                      10 ** tokenMetadata?.decimals
-                    )
-                  )}{" "}
-                  {tokenMetadata.symbol}
-                  <img
-                    src="https://i.gifer.com/origin/a9/a95ef9bce2a1d53accc6a8018df04ff6_w200.gif"
-                    alt="fire"
-                    className={styles.fireIcon}
-                  />
-                </>
-              ) : (
-                0
-              )}
-            </div>
-          </div>
-        </div>
+        <StatsDisplay 
+          contractState={contractState}
+          tokenMetadata={tokenMetadata}
+          gridSize={gridSize}
+        />
       )}
 
       <main>

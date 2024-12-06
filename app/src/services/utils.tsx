@@ -9,6 +9,12 @@ export interface TokenList {
   tokens: Token[];
 }
 
+
+export interface TokenBalance {
+  id: string;
+  amount: bigint;
+}
+
 web3.setCurrentNodeProvider(
   (process.env.NEXT_PUBLIC_NODE_URL as string) ??
     "https://fullnode-testnet.alephium.notrustverify.ch",
@@ -160,3 +166,33 @@ export async function getTokenList(): Promise<Token[]> {
 }
 
 export const tokenFaucetConfig = getTokenFaucetConfig();
+
+
+
+
+export const balanceOf = async (address: string, tokenId?: string): Promise<TokenBalance[] | bigint> => {
+  const balances = await web3.getCurrentNodeProvider().addresses.getAddressesAddressBalance(address)
+  const tokenBalances = balances.tokenBalances
+
+  // If tokenId is provided, return only that token's balance
+  if (tokenId && tokenBalances) {
+    const token = tokenBalances.find(t => t.id === tokenId)
+    return token ? BigInt(token.amount) : 0n
+  }
+
+  // Otherwise return all token balances as before
+  return tokenBalances === undefined
+    ? []
+    : tokenBalances.map((t) => {
+        return { id: t.id, amount: BigInt(t.amount) }
+      })
+}
+
+// Functions belows are taken from PredictAlph test suite
+// https://github.com/notrustverify/predictalph-contracts/blob/predictionv2/test/utils.ts
+
+export const alphBalanceOf = async (address: string): Promise<bigint> => {
+  const balances = await web3.getCurrentNodeProvider().addresses.getAddressesAddressBalance(address)
+  const balance = balances.balance
+  return balance === undefined ? 0n : BigInt(balance)
+}
