@@ -84,7 +84,8 @@ export default function Docs() {
               <p>
                 Pixels can also be reset to their default uncolored state, or recolored to a new color. To do so,
                 just click a pixel that's already been colored, and choose to either reset or recolor.
-                Resetting or recoloring a pixel will return the 0.1 $ALPH contract creation fee to the original minter. 
+                Resetting a pixel burns twice the amount of $EXY (1380 $EXY) and will return the 0.1 $ALPH contract creation fee to the original minter.
+                Recoloring a pixel burns the same amount as minting (690 $EXY), and does NOT return 0.1 $ALPH to orignal minter. This is to incentivize users to recolor rather than resetting. 
                 Once a pixel is reset, it can then be colored again using the same mint process as before.
               </p>
             </div>

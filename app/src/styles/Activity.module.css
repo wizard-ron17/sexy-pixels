@@ -303,5 +303,25 @@
     flex-direction: column;
     align-items: flex-start;
   }
+}
 
-} 
+@media (max-width: 460px) {
+  .container {
+    margin-top: 10px; /* Push content down by 20px */
+  }
+
+  .liveIndicator {
+    margin-top: 0px; /* Use flexbox to align items */
+    align-items: center; /* Push live indicator down by 20px */
+  }
+
+  .pulse {
+    margin-top: 0px; /* Push pulse down by 20px */
+  }
+
+  .titleContainer {
+    display: flex; /* Use flexbox to align title and live indicator */
+    align-items: center; /* Center items vertically */
+    margin-top: 50px; /* Push title container down by 20px */
+  }
+}

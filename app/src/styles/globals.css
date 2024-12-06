@@ -658,3 +658,33 @@ main {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+@media (max-width: 460px) {
+  header h1 {
+      font-size: 1.5rem; /* Adjust this value as needed */
+      white-space: nowrap; /* Prevents the text from wrapping */
+      margin-top: 0px;
+  }
+}
+
+@media (max-width: 460px) {
+  header {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    height: 12%;
+    z-index: 0;
+  }
+
+  header h1 {
+    margin-bottom: 10px;
+  }
+
+  header nav {
+    margin-top: 0px;
+    align-items: center;
+    text-align: center;
+    position: fixed;
+    top: 40px;
+  }
+}
