@@ -677,12 +677,10 @@ main {
     background-color: #242424;
     position: fixed;
     gap: 2px;
-    padding-top: 0;
   }
 
   header h1 {
     margin-bottom: 5px;
-    margin-top: 0px;
   }
 
   header nav {
