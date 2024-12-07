@@ -29,6 +29,8 @@ import { mintPx, resetPx } from "@/services/token.service";
 import { PixelFactoryTypes } from "my-contracts";
 import styles from "../styles/Stats.module.css";
 import { StatsDisplay } from './StatsDisplay';
+import { Head } from "next/document";
+import Link from "next/link";
 
 const colors = [
   "#FF5733",
@@ -406,27 +408,41 @@ export const TokenDapp: FC<{
 
   return (
     <>
-      {error && <p style={{ color: "red" }}>Error: {error}</p>}
+      <div className={gridStyles.App}>
+        <header>
+          <h1>$EXY PIXELS</h1>
+          {contractState !== null && (
+            <StatsDisplay 
+              contractState={contractState}
+              tokenMetadata={tokenMetadata}
+              gridSize={gridSize}
+            />
+          )}
+          <nav>
+            <Link href="/docs" className="nav-text">Docs</Link>
+            <Link href="/activity" className="nav-text">Activity</Link>
+            <AlephiumConnectButton />
+          </nav>
+          
+        </header>
 
-      {loading && (
-        <div className={styles.loadingContainer}>
-          <div className={styles.loadingSpinner} />
-          <p className={styles.loadingText}>Loading the pixel grid...</p>
-        </div>
-      )}
-      {contractState !== null && (
-        <StatsDisplay 
-          contractState={contractState}
-          tokenMetadata={tokenMetadata}
-          gridSize={gridSize}
-        />
-      )}
+        {error && <p style={{ color: "red" }}>Error: {error}</p>}
 
-      <main>
-        <div id={gridStyles.gridContainer}>
-          <div id={gridStyles.grid}>{memoizedPixels}</div>
-        </div>
-      </main>
+        {loading && (
+          <div className={styles.loadingContainer}>
+            <div className={styles.loadingSpinner} />
+            <p className={styles.loadingText}>Loading the pixel grid...</p>
+          </div>
+        )}
+
+        <main>
+          <div id={gridStyles.gridContainer}>
+            <div id={gridStyles.grid}>{memoizedPixels}</div>
+          </div>
+        </main>
+      </div>
+
+      {/* Modals remain outside the main App div */}
       {modalVisible && !isResetModal && (
         <div className={gridStyles.modal}>
           <div className={gridStyles.modalContent}>

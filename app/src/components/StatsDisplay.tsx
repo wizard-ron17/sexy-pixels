@@ -49,53 +49,34 @@ export const StatsDisplay: React.FC<StatsDisplayProps> =  ({
 
   return (
     <div className={styles.statsContainer}>
-      <div className={styles.statBox}>
-        <div className={styles.statLabel}>Minted</div>
-        <div className={styles.statValue}>
-          {Number(contractState.fields.numPxMinted)} / {gridSize * gridSize}
-        </div>
-      </div>
-      <div className={styles.statBox}>
-        <div className={styles.statLabel}>Burned</div>
-        <div className={styles.statValue}>
-          {tokenMetadata !== undefined ? (
-            <>
-              {new Intl.NumberFormat('en-US', { notation: 'compact' }).format(
-                Math.floor(
-                  Number(contractState.fields.balanceBurn) /
-                  10 ** tokenMetadata.decimals
-                )
-              )}{' '}
-              {tokenMetadata.symbol}
-              <img
-                src="https://i.gifer.com/origin/a9/a95ef9bce2a1d53accc6a8018df04ff6_w200.gif"
-                alt="fire"
-                className={styles.fireIcon}
-              />
-            </>
-          ) : (
-            0
-          )}
-          <small>
-          <div>
-            {tokenMetadata && (
-              <>
-                ~ {((Number(contractState.fields.balanceBurn) /
-                  10 ** tokenMetadata.decimals
-                ) * burnRatio).toFixed(2)} EX
-                {exPrice > 0 && (
-                    <div>
-                        (≈ ${((Number(contractState.fields.balanceBurn) /
-                            10 ** tokenMetadata.decimals
-                        ) * burnRatio * exPrice).toFixed(2)} USD)
-                    </div>
-                )}
-              </>
+      <span>
+      <img
+              src="https://i.gifer.com/origin/a9/a95ef9bce2a1d53accc6a8018df04ff6_w200.gif"
+              alt="fire"
+              className={styles.fireIcon}
+              style={{ width: '16px', height: '16px' }}  
+            /> Total Burned: {tokenMetadata !== undefined ? (
+          <>
+            {new Intl.NumberFormat('en-US', { notation: 'compact' }).format(
+              Math.floor(
+                Number(contractState.fields.balanceBurn) /
+                10 ** tokenMetadata.decimals
+              )
+            )} {tokenMetadata.symbol} 
+            {exPrice > 0 && (
+              <span>
+                (≈ ${((Number(contractState.fields.balanceBurn) /
+                    10 ** tokenMetadata.decimals
+                ) * burnRatio * exPrice).toFixed(2)} USD)
+              </span>
             )}
-          </div>
-          </small>
-        </div>
-      </div>
+            
+          </>
+        ) : (
+          0
+        )} | 
+        Pixels Minted: {Number(contractState.fields.numPxMinted)} / {gridSize * gridSize}
+      </span>
     </div>
   );
 }; 

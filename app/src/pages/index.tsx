@@ -18,21 +18,13 @@ export default function Home() {
 
   return (
     <>
-      <Head>
+        <Head>
         <title>$EXY PIXELS</title>
         <meta name="description" content="Burn to play" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <div className={gridStyles.App}>
-        <header>
-          <h1>$EXY PIXELS</h1>
-          <nav>
-            <Link href="/docs" className="nav-text">Docs</Link>
-            <Link href="/activity" className="nav-text">Activity</Link>
-            <AlephiumConnectButton />
-          </nav>
-        </header>
+      <div>
         
           <TokenDapp config={tokenFaucetConfig} />
         
