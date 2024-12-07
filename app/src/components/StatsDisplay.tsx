@@ -29,7 +29,7 @@ export const StatsDisplay: React.FC<StatsDisplayProps> =  ({
         };
 
         fetchPrices();
-        const interval = setInterval(fetchPrices, 600000); // Update price every minute
+        const interval = setInterval(fetchPrices, 600000);
 
         return () => clearInterval(interval);
     }, []);
