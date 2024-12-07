@@ -1,13 +1,14 @@
 .App {
    display: flex;
    flex-direction: column;
-   justify-content: center;
+   justify-content: flex-start;
    align-items: center;
    background-color: transparent;
    color: #fff;
-   min-height: 80vh;
+   min-height: 100vh;
    overflow-x: hidden;
    padding-top: 50px;
+   gap: 1rem;
  }
 
  #gridContainer {
@@ -20,13 +21,16 @@
    display: flex;
    justify-content: center;
    align-items: center;
-   width: 90vmin;
-   height: 90vmin;
-   max-width: 90vmin;
-   max-height: 90vmin;
+   width: 80vmin;
+   height: 80vmin;
+   max-width: 80vmin;
+   max-height: 80vmin;
    background-color: #000;
    overflow: hidden;
    margin: 0 auto;
+   position: relative;
+   transform: none;
+   top: 0;
  }
  
  #grid {
@@ -132,19 +136,14 @@
  /* Mobile Styles */
  @media (max-width: 600px) {
    .App {
-     padding-top: 15px;
-     min-height: 100vh;
-     position: relative;
-     overflow-y: auto;
+     padding-top: 10px;
    }
 
    #gridContainer {
-     width: 95vmin;
-     height: 95vmin;
-     position: relative;
-     margin: 10px auto;
-     padding: 10px;
-     overflow: visible;
+     width: 90vmin;
+     height: 90vmin;
+     margin: 0 auto;
+     padding: 5px;
    }
  
    #grid {
