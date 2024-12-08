@@ -62,7 +62,8 @@ export const StatsDisplay: React.FC<StatsDisplayProps> =  ({
                 Number(contractState.fields.balanceBurn) /
                 10 ** tokenMetadata.decimals
               )
-            )} {tokenMetadata.symbol} 
+            )} {tokenMetadata.symbol}
+            <br/>
             {exPrice > 0 && (
               <span>
                 (≈ ${((Number(contractState.fields.balanceBurn) /

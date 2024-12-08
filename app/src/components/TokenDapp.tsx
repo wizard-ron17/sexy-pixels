@@ -410,20 +410,27 @@ export const TokenDapp: FC<{
     <>
       <div className={gridStyles.App}>
         <header>
-          <h1>$EXY PIXELS</h1>
-          {contractState !== null && (
-            <StatsDisplay 
-              contractState={contractState}
-              tokenMetadata={tokenMetadata}
-              gridSize={gridSize}
-            />
-          )}
+          <div className="title-section">
+            <h1>$EXY PIXELS</h1>
+            <div className="stats-wrapper">
+              {contractState !== null && (
+                <StatsDisplay 
+                  contractState={contractState}
+                  tokenMetadata={tokenMetadata}
+                  gridSize={gridSize}
+                />
+              )}
+            </div>
+          </div>
           <nav>
-            <Link href="/docs" className="nav-text">Docs</Link>
-            <Link href="/activity" className="nav-text">Activity</Link>
-            <AlephiumConnectButton />
+            <div className="nav-links">
+              <Link href="/docs" className="nav-text">Docs</Link>
+              <Link href="/activity" className="nav-text">Activity</Link>
+            </div>
+            <div className="wallet-section">
+              <AlephiumConnectButton />
+            </div>
           </nav>
-          
         </header>
 
         {error && <p style={{ color: "red" }}>Error: {error}</p>}

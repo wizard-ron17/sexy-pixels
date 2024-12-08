@@ -173,16 +173,13 @@ header {
  header nav {
    display: flex;
    gap: 15px;
-   margin-left: 20px;
+   margin-left: auto;
    align-items: center;
-   margin-bottom: 0;
  }
  
  header nav .nav-text {
    color: #fff;
-   cursor: pointer;
-   font-size: 1em;
-   display: inline-block;
+   font-size: 0.9rem;
  }
  
  header nav .nav-text:hover {
@@ -660,35 +657,196 @@ main {
 }
 
 @media (max-width: 460px) {
+  header {
+    flex-direction: row;
+    align-items: center;
+    height: auto;
+    padding: 4px 8px;
+    position: fixed;
+    background-color: #242424;
+    z-index: 100;
+  }
+
   header h1 {
-      font-size: 1.5rem; /* Adjust this value as needed */
-      white-space: nowrap; /* Prevents the text from wrapping */
-      margin-top: 0px;
+    font-size: 1.2rem;
+    margin: 0;
+    text-align: left;
+  }
+
+  header nav {
+    margin: 0;
+    margin-left: auto;
+    gap: 6px;
+  }
+
+  .nav-text {
+    font-size: 0.8rem;
+  }
+}
+
+.mobile-break {
+  display: none;
+}
+
+@media (max-width: 460px) {
+  .mobile-break {
+    display: block;
+    width: 100%;
+    height: 2px;
+  }
+
+  header {
+    padding: 4px 8px;
+    flex-wrap: wrap;
+  }
+
+  header nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 0;
+    gap: 6px;
+  }
+
+  .nav-text {
+    font-size: 0.8rem;
+  }
+
+  /* Ensure title section takes full width */
+  .title-section {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+}
+
+.title-section {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  justify-content: center;
+}
+
+.stats-wrapper {
+  display: flex;
+  justify-content: center;
+  flex: 1;
+}
+
+.total-burned {
+  color: #fff;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+@media (max-width: 460px) {
+  .title-section {
+    width: 100%;
+    gap: 4px;
+    justify-content: flex-start;
+  }
+
+  .stats-wrapper {
+    justify-content: flex-start;
+    font-size: 0.75rem;
+  }
+
+  .total-burned {
+    font-size: 0.8rem;
+  }
+
+  header {
+    padding: 4px 8px;
+    flex-wrap: wrap;
+  }
+
+  header nav {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    width: 100%;
+    margin-top: 0;
+    gap: 6px;
+  }
+
+  .mobile-break {
+    display: block;
+    width: 100%;
+    height: 2px;
   }
 }
 
 @media (max-width: 460px) {
   header {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    height: 12%;
-    z-index: 100;
-    background-color: #242424;
-    position: fixed;
-    gap: 2px;
+    padding: 4px 8px;
+    flex-wrap: wrap;
+  }
+
+  .title-section {
+    width: 100%;
+    gap: 4px;
+    justify-content: flex-start;
+  }
+
+  .nav-links {
+    position: absolute;
+    top: 4px;
+    right: 8px;
+    gap: 6px;
+  }
+
+  .nav-text {
+    font-size: 0.7rem;
+    margin-right: 4px;
+  }
+
+  .stats-wrapper {
+    justify-content: flex-start;
+    font-size: 0.75rem;
   }
 
   header h1 {
-    margin-bottom: 5px;
+    font-size: 1rem;
   }
 
-  header nav {
-    margin-top: 0px;
-    align-items: center;
-    text-align: center;
-    position: relative;
-    top: 0;
-    gap: 10px;
+  .wallet-section {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+/* Hide wallet section at larger breakpoint */
+@media (max-width: 420px) {
+  .wallet-section {
+    display: none;
+  }
+}
+
+.nav-links {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.nav-text {
+  color: #fff;
+  font-size: 0.9rem;
+  margin-right: 8px;
+}
+
+.nav-text:last-child {
+  margin-right: 0;
+}
+
+@media (max-width: 460px) {
+  .nav-links {
+    width: 100%;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .nav-text {
+    font-size: 0.8rem;
+    margin-right: 12px;
   }
 }

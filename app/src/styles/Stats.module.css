@@ -2,11 +2,26 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
   color: #fff;
   font-size: 0.9rem;
   padding: 0.5rem;
   text-align: center;
   min-height: 40px;
+}
+
+@media (max-width: 480px) {
+  .statsContainer {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.25rem;
+  }
+
+  .statsContainer span {
+    display: block;
+    width: 100%;
+  }
 }
 
 .statsContainer span {
