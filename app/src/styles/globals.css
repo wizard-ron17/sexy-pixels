@@ -656,7 +656,7 @@ main {
   cursor: not-allowed;
 }
 
-@media (max-width: 460px) {
+@media (max-width: 900px) {
   header {
     flex-direction: row;
     align-items: center;
@@ -816,7 +816,7 @@ main {
 }
 
 /* Hide wallet section at larger breakpoint */
-@media (max-width: 420px) {
+@media (max-width: 900px) {
   .wallet-section {
     display: none;
   }
