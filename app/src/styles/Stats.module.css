@@ -11,16 +11,20 @@
   min-height: 40px;
 }
 
-@media (max-width: 480px) {
+@media (max-width: 566px) {
   .statsContainer {
-    display: grid;
-    grid-template-columns: 1fr;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     gap: 0.25rem;
+    margin-top: 20px;
+    width: 100%;
   }
 
   .statsContainer span {
     display: block;
     width: 100%;
+    text-align: center;
   }
 }
 
