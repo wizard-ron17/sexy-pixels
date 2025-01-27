@@ -1,41 +1,40 @@
 .statsContainer {
   display: flex;
-  justify-content: center;
   align-items: center;
-  flex-wrap: wrap;
-  gap: 0.5rem;
+  gap: 8px;
   color: #fff;
   font-size: 0.9rem;
-  padding: 0.5rem;
-  text-align: center;
-  min-height: 40px;
-}
-
-@media (max-width: 566px) {
-  .statsContainer {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.25rem;
-    margin-top: 20px;
-    width: 100%;
-  }
-
-  .statsContainer span {
-    display: block;
-    width: 100%;
-    text-align: center;
-  }
-}
-
-.statsContainer span {
+  padding: 6px 10px;
   white-space: nowrap;
 }
 
 .fireIcon {
-  width: clamp(6px, 1vw, 8px);
-  height: clamp(6px, 1vw, 8px);
-  margin-left: 4px;
+  width: 14px;
+  height: 14px;
   display: inline-block;
   vertical-align: middle;
+}
+
+.usdPrice {
+  margin-left: 4px;
+}
+
+.divider {
+  margin: 0 4px;
+  opacity: 0.5;
+}
+
+@media (max-width: 760px) {
+  .statsContainer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    backdrop-filter: blur(8px);
+    border-bottom: 5px;
+    z-index: 1000;
+    justify-content: center;
+    font-size: 0.8rem;
+  }
 }
